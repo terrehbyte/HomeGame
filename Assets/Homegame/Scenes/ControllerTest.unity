@@ -605,5 +605,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2171536950022498250, guid: 524c2fca2eb7a7347a01a605d0c41093,
+        type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1538568931}
+    - target: {fileID: 2171536950022498250, guid: 524c2fca2eb7a7347a01a605d0c41093,
+        type: 3}
+      propertyPath: groundFriction
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171536950022498250, guid: 524c2fca2eb7a7347a01a605d0c41093,
+        type: 3}
+      propertyPath: groundAcceleration
+      value: 50
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 524c2fca2eb7a7347a01a605d0c41093, type: 3}

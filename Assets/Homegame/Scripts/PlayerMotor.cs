@@ -9,8 +9,12 @@ public class PlayerMotor : MonoBehaviour
     public Collider coll;
 
     [Header("Movement")]
-    public float speed = 5.0f;
+    [ReadOnlyField]
+    public Vector3 velocity;
     public Camera playerCamera;
+    public float groundFriction = 1;
+    public float groundAcceleration = 20;
+    public float groundMaxSpeed = 5.0f;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -20,21 +24,63 @@ public class PlayerMotor : MonoBehaviour
     [ReadOnlyField]
     public Vector3 groundNorm;
 
-    void Update()
+    // Returns the player's new velocity when moving on the ground
+    // accelDir: world-space direction to accelerate in
+    // prevVelocity: world-space velocity
+    private Vector3 MoveGround(Vector3 accelDir, Vector3 prevVelocity)
     {
-        var potentialGround = Physics.RaycastAll(transform.position, Vector3.down,
-                                                 groundCheckLength, groundCheckLayer,
+        float speed = prevVelocity.magnitude;
+        if (speed != 0)
+        {
+            float drop = speed * groundFriction * Time.fixedDeltaTime;
+            prevVelocity *= Mathf.Max(speed - drop, 0) / speed;
+        }
+
+        return Accelerate(accelDir, prevVelocity, groundAcceleration, groundMaxSpeed);
+    }
+
+    // Returns the player's new velocity based on the given parameters
+    // accelDir: world-space direction to accelerate in
+    // prevVelocity: world-space velocity
+    // accelerate: amount to accelerate by
+    // maxSpeed: max player speed to achieve when accelerating
+    private Vector3 Accelerate(Vector3 accelDir, Vector3 prevVelocity, float accelerate, float maxSpeed)
+    {
+        float projVel = Vector3.Dot(prevVelocity, accelDir);
+        float accelVel = accelerate * Time.fixedDeltaTime;
+
+        if(projVel + accelVel > maxSpeed)
+        {
+            accelVel = maxSpeed - projVel;
+        }
+
+        return prevVelocity + accelDir * accelVel;
+    }
+
+    private bool PerformGroundCheck(Vector3 position, float maxGroundDistance, out Collider groundCollider, out Vector3 groundNormal)
+    {
+        var potentialGround = Physics.RaycastAll(position, Vector3.down,
+                                                 maxGroundDistance, groundCheckLayer,
                                                  QueryTriggerInteraction.Ignore);
         
         foreach(var ground in potentialGround)
         {
             if(ground.collider != coll)
             {
-                groundNorm = ground.normal;
-                groundCol = ground.collider;
-                break;
+                groundNormal = ground.normal;
+                groundCollider = ground.collider;
+                return true;
             }
         }
+
+        groundNormal = Vector3.zero;
+        groundCollider = null;
+        return false;
+    }
+
+    void Update()
+    {
+        PerformGroundCheck(transform.position, groundCheckLength, out groundCol, out groundNorm);
 
         Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"),
                                     0.0f,
@@ -43,12 +89,10 @@ public class PlayerMotor : MonoBehaviour
         input.Normalize();
         input = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * input;
         input = Vector3.ProjectOnPlane(input, groundNorm);
-        input *= speed * Time.deltaTime;
 
-        if(input.magnitude > 0)
-        {
-            charController.Move(input);
-        }
+        velocity = MoveGround(input, velocity);
+        Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
+        charController.Move(delta);
     }
 
     void OnDrawGizmos()
