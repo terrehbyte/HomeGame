@@ -40,6 +40,7 @@ public class PlayerManager : MonoBehaviour
     private Vector3 triggerCapsuleBot;
 
     private CapsuleCollider selfCapsuleCollider;
+    public Renderer selfRenderer;
 
 
     [Header("Input")]
@@ -72,6 +73,7 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         selfCapsuleCollider = this.GetComponent<CapsuleCollider>();
+        selfRenderer = this.GetComponent<Renderer>();
     }
 
     void Update()

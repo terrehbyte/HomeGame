@@ -6,7 +6,8 @@ public class PlayerMotor : MonoBehaviour
 {
     [Header("Components")]
     public CharacterController charController;
-    public Collider coll;
+    public CapsuleCollider coll;
+    public PlayerManager manager;
 
     [Header("Movement")]
     public float sidleLerpSpeed = 1;
@@ -22,8 +23,26 @@ public class PlayerMotor : MonoBehaviour
     public float groundRunAcceleration = 50;
     public float groundRunMaxSpeed = 5.0f;
 
+    public float groundCrouchAcceleration = 50;
+    public float groundCrouchMaxSpeed = 5.0f;
+
     public float groundSidleAcceleration = 50;
     public float groundSidleMaxSpeed = 5.0f;
+
+    [Header("Crouch")]
+    public float crouchHeight = 1;
+    public float standHeight = 2;
+    public float crouchDuration = 0.5f;
+    public bool crouchWish = false;
+    private float crouchTimer;
+    public float crouchProgress
+    {
+        get
+        {
+            return Mathf.Clamp(crouchTimer / crouchDuration, 0, 1);
+        }
+    }
+
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -62,6 +81,8 @@ public class PlayerMotor : MonoBehaviour
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
         Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
         charController.Move(delta);
+
+        transform.forward = velocity.normalized;
     }
 
     public void Run(Vector3 runDir)
@@ -73,6 +94,8 @@ public class PlayerMotor : MonoBehaviour
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
         Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
         charController.Move(delta);
+
+        transform.forward = velocity.normalized;
     }
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
@@ -121,18 +144,18 @@ public class PlayerMotor : MonoBehaviour
 
     public void Idle(Vector3 idleDir)
     {
-
         Debug.Log("IDLE");
     }
 
-    void startCrouch()
+    public void StartCrouch()
     {
-
+        crouchWish = true;
     }
 
-    void stopCrouch()
+    public void StopCrouch()
     {
-
+        crouchWish = false;
+        crouchTimer = 0.0f;
     }
 
     void doRock()
@@ -207,6 +230,9 @@ public class PlayerMotor : MonoBehaviour
     void Update()
     {
         PerformGroundCheck(transform.position, groundCheckLength, out groundCol, out groundNorm);
+        crouchTimer += (crouchWish ? 1.0f : 0.0f) * Time.deltaTime;
+        charController.height = coll.height = Mathf.Lerp(standHeight, crouchHeight, crouchProgress);
+        charController.center = coll.center = Vector3.up * (charController.height - 2) / 2;
     }
 
     void OnDrawGizmos()
@@ -218,6 +244,6 @@ public class PlayerMotor : MonoBehaviour
     void Reset()
     {
         charController = GetComponent<CharacterController>();
-        coll = GetComponent<Collider>();
+        coll = GetComponent<CapsuleCollider>();
     }
 }
