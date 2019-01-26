@@ -12,9 +12,16 @@ public class PlayerMotor : MonoBehaviour
     [ReadOnlyField]
     public Vector3 velocity;
     public Camera playerCamera;
-    public float groundFriction = 1;
-    public float groundAcceleration = 20;
-    public float groundMaxSpeed = 5.0f;
+    public float groundFriction = 11;
+
+    public float groundWalkAcceleration = 50;
+    public float groundWalkMaxSpeed = 5.0f;
+
+    public float groundRunAcceleration = 50;
+    public float groundRunMaxSpeed = 5.0f;
+
+    public float groundSidleAcceleration = 50;
+    public float groundSidleMaxSpeed = 5.0f;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -24,10 +31,71 @@ public class PlayerMotor : MonoBehaviour
     [ReadOnlyField]
     public Vector3 groundNorm;
 
+    Vector3 ControllerToWorldDirection(Vector3 controllerDir)
+    {
+        controllerDir.Normalize();
+        controllerDir = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * controllerDir;
+        controllerDir = Vector3.ProjectOnPlane(controllerDir, groundNorm);
+
+        return controllerDir;
+    }
+
+    public void Walk(Vector3 walkDir)
+    {
+        Vector3 input = ControllerToWorldDirection(walkDir);
+
+        velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
+        Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
+        charController.Move(delta);
+    }
+
+    public void Run(Vector3 runDir)
+    {
+        Vector3 input = ControllerToWorldDirection(runDir);
+
+        velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
+        Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
+        charController.Move(delta);
+    }
+
+    public void Sidle(Vector3 sidleDir)
+    {
+
+    }
+
+    public void Idle(Vector3 idleDir)
+    {
+    }
+
+    void startCrouch()
+    {
+
+    }
+
+    void stopCrouch()
+    {
+
+    }
+
+    void doRock()
+    {
+
+    }
+
+    void doTakedown()
+    {
+
+    }
+
+    void doKnock()
+    {
+
+    }
+
     // Returns the player's new velocity when moving on the ground
     // accelDir: world-space direction to accelerate in
     // prevVelocity: world-space velocity
-    private Vector3 MoveGround(Vector3 accelDir, Vector3 prevVelocity)
+    private Vector3 MoveGround(Vector3 accelDir, Vector3 prevVelocity, float acceleration, float maxSpeed)
     {
         float speed = prevVelocity.magnitude;
         if (speed != 0)
@@ -36,7 +104,7 @@ public class PlayerMotor : MonoBehaviour
             prevVelocity *= Mathf.Max(speed - drop, 0) / speed;
         }
 
-        return Accelerate(accelDir, prevVelocity, groundAcceleration, groundMaxSpeed);
+        return Accelerate(accelDir, prevVelocity, acceleration, maxSpeed);
     }
 
     // Returns the player's new velocity based on the given parameters
@@ -81,18 +149,6 @@ public class PlayerMotor : MonoBehaviour
     void Update()
     {
         PerformGroundCheck(transform.position, groundCheckLength, out groundCol, out groundNorm);
-
-        Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"),
-                                    0.0f,
-                                    Input.GetAxisRaw("Vertical"));
-
-        input.Normalize();
-        input = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * input;
-        input = Vector3.ProjectOnPlane(input, groundNorm);
-
-        velocity = MoveGround(input, velocity);
-        Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
-        charController.Move(delta);
     }
 
     void OnDrawGizmos()
