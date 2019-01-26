@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2171536950022498248}
   - component: {fileID: 2171536950022498251}
   - component: {fileID: 2171536950022498250}
+  - component: {fileID: 6161894975481101484}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -126,10 +127,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charController: {fileID: 2171536950022498251}
   coll: {fileID: 2171536950022498248}
-  speed: 5
+  velocity: {x: 0, y: 0, z: 0}
+  playerCamera: {fileID: 0}
+  groundFriction: 1
+  groundAcceleration: 20
+  groundMaxSpeed: 5
   groundCheckLength: 1.5
   groundCheckLayer:
     serializedVersion: 2
     m_Bits: 4294967295
   groundCol: {fileID: 0}
   groundNorm: {x: 0, y: 0, z: 0}
+--- !u!114 &6161894975481101484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2171536950022498293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e0fc0e7046ba6742b4a41198cc25620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerState: 0
+  armbandState: 0
+  autoSidle: 1
+  selfCapsuleLayerMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  triggerCapsuleRadiusOffset: 0.75
+  canWalk: 0
+  canRun: 0
+  canCrouch: 0
+  canSidle: 0
+  canKnock: 0
+  canThrowRock: 0
+  canTakeDown: 0
+  numObjectsNearPlayer: 0

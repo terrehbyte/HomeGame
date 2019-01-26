@@ -36,6 +36,10 @@ public class PlayerManager : MonoBehaviour
 
     private CapsuleCollider selfCapsuleCollider;
 
+    [Header("Input")]
+    public float horizontal;
+    public float vertical;
+
 
     public enum PLAYER_STATE
     {
@@ -67,6 +71,8 @@ public class PlayerManager : MonoBehaviour
         /*
          * controller input, wall normal vec3
          */
+
+
 
 
     }
