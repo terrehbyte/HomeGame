@@ -43,6 +43,11 @@ public class PlayerMotor : MonoBehaviour
         }
     }
 
+    [Header("Sidle")]
+    public float sidleAlignmentDegreesPerSecond = 90.0f;
+    bool sidleAligned = false;
+    bool sidleSurfaceKnown = false;
+    Vector3 sidleSurfaceNormal;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -52,12 +57,6 @@ public class PlayerMotor : MonoBehaviour
     [ReadOnlyField]
     public Vector3 groundNorm;
 
-
-    bool AgaintsWall = false;
-    bool startingAngleRecorded = false;
-    Vector3 startingAngle;
-    float sidleLerpNormal = 0;
-    
 
     private void Awake()
     {
@@ -87,7 +86,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Run(Vector3 runDir)
     {
-
         Debug.Log("RUNNING");
         Vector3 input = ControllerToWorldDirection(runDir);
 
@@ -100,43 +98,12 @@ public class PlayerMotor : MonoBehaviour
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
-        if (AgaintsWall == false)
+        if (sidleAligned == false)
         {
-            if (startingAngleRecorded == false)
-            {
-                startingAngleRecorded = true;
-                startingAngle = transform.forward;
-            }
-            float targetAngle =
-                (Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg)
-                - Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg * sidleLerpNormal
-                + Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(wallForward), sidleAlignmentDegreesPerSecond * Time.deltaTime);
 
-            //Debug.Log((Mathf.Atan2(wallForward.z, wallForward.x) -
-            //    Mathf.Atan2(startingAngle.z, startingAngle.x)) * Mathf.Rad2Deg);
-
-            Debug.Log(Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg);
-            //Debug.Log(Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg);
-
-            transform.rotation = Quaternion.Euler(0, targetAngle, 0);
-            
-
-            sidleLerpNormal += sidleLerpSpeed * Time.deltaTime;
-
-            if (sidleLerpNormal >= 1 || Mathf.Atan2(wallForward.z, wallForward.x) == Mathf.Atan2(startingAngle.z, startingAngle.x))
-            {
-                transform.rotation = Quaternion.Euler(0, Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg, 0);
-                startingAngleRecorded = false;
-                AgaintsWall = true;
-            }
             return;
         }
-        else
-        {
-            //MOVING ALONG THE WALL
-
-        }
-
 
         // run this when you detect the sidle is canceled
         exitSidleCallback.Invoke();
