@@ -108,9 +108,9 @@ public class PlayerMotor : MonoBehaviour
                 startingAngle = transform.forward;
             }
             float targetAngle =
-                (Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg -
-                Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg) * sidleLerpNormal
-            + Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg;
+                (Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg)
+                - Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg * sidleLerpNormal
+                + Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg;
 
             //Debug.Log((Mathf.Atan2(wallForward.z, wallForward.x) -
             //    Mathf.Atan2(startingAngle.z, startingAngle.x)) * Mathf.Rad2Deg);

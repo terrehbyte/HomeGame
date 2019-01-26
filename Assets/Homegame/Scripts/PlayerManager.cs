@@ -78,59 +78,84 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+
+
         if (canMove == false)
         {
             //cant move
         }
         else
         {
-            triggerCapsuleTop = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-            triggerCapsuleBot = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
-            //note for future, this can also take in a QueryTriggerInteraction to descide if it works on triggers
-            numObjectsNearPlayer = Physics.OverlapCapsuleNonAlloc(triggerCapsuleTop, triggerCapsuleBot, selfCapsuleCollider.radius * transform.localScale.x + triggerCapsuleRadiusOffset, objectsNearPlayer, selfCapsuleLayerMask);
+            UpdatePlayerState();
+            UpdatePlayerAction();
+        }
+
+        switch (playerState)
+        {
+            case PLAYER_STATE.STILL:
+                playerMotor.Idle(input);
+                break;
+            case PLAYER_STATE.WALK:
+                playerMotor.Walk(input);
+                break;
+            case PLAYER_STATE.RUN:
+                playerMotor.Run(input);
+                break;
+            case PLAYER_STATE.SIDLE:
+
+                RaycastHit RayData;
+                Physics.Raycast(transform.position, objectsNearPlayer[0].ClosestPoint(transform.position), out RayData, 2, selfCapsuleLayerMask);
+                playerMotor.Sidle(input, RayData.normal, tempFunc);
+                Debug.Log("raydata norm = " + RayData.normal);
+                break;
+        }
+
+        void tempFunc()
+        {
+
+        }
+    }
+
+    private void UpdatePlayerState()
+    {
+        triggerCapsuleTop = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
+        triggerCapsuleBot = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+        //note for future, this can also take in a QueryTriggerInteraction to descide if it works on triggers
+        numObjectsNearPlayer = Physics.OverlapCapsuleNonAlloc(triggerCapsuleTop, triggerCapsuleBot, selfCapsuleCollider.radius * transform.localScale.x + triggerCapsuleRadiusOffset, objectsNearPlayer, selfCapsuleLayerMask);
 
 
-            input = new Vector3(Input.GetAxisRaw("Horizontal"),
-                                       0.0f,
-                                       Input.GetAxisRaw("Vertical"));
+        input = new Vector3(Input.GetAxisRaw("Horizontal"),
+                                   0.0f,
+                                   Input.GetAxisRaw("Vertical"));
 
-            if (input.magnitude == 0.0f)
+        if (input.magnitude == 0.0f)
+        {
+            if (playerState != PLAYER_STATE.STILL && playerState != PLAYER_STATE.SIDLE)
             {
-                if (playerState != PLAYER_STATE.STILL && playerState != PLAYER_STATE.SIDLE)
+                previousPlayerState = playerState;
+                playerState = PLAYER_STATE.STILL;
+                canThrowRock = true;
+            }
+        }
+        else if (playerState == PLAYER_STATE.STILL)
+        {
+            canThrowRock = false;
+        }
+
+        if (canWalk == true && input.magnitude != 0.0f)
+        {
+            if (playerState != PLAYER_STATE.WALK)
+            {
+                previousPlayerState = playerState;
+                playerState = PLAYER_STATE.WALK;
+            }
+
+            if (Input.GetKey(KeyCode.LeftShift) && canRun == true)
+            {
+                if (playerState != PLAYER_STATE.RUN)
                 {
                     previousPlayerState = playerState;
-                    playerState = PLAYER_STATE.STILL;
-                    canThrowRock = true;
-                }
-            }
-            else if (playerState == PLAYER_STATE.STILL)
-            {
-                    canThrowRock = false;
-            }
-
-            if (canWalk == true && input.magnitude != 0.0f)
-            {
-                if (playerState != PLAYER_STATE.WALK)
-                {
-                    previousPlayerState = playerState;
-                    playerState = PLAYER_STATE.WALK;
-                }
-
-                if (Input.GetKey(KeyCode.LeftShift) && canRun == true)
-                {
-                    if (playerState != PLAYER_STATE.RUN)
-                    {
-                        previousPlayerState = playerState;
-                        playerState = PLAYER_STATE.RUN;
-                    }
-                    else
-                    {
-                        if (playerState == PLAYER_STATE.RUN)
-                        {
-                            playerState = previousPlayerState;
-                            previousPlayerState = PLAYER_STATE.RUN;
-                        }
-                    }
+                    playerState = PLAYER_STATE.RUN;
                 }
                 else
                 {
@@ -141,118 +166,97 @@ public class PlayerManager : MonoBehaviour
                     }
                 }
             }
-
-            if (Input.GetKey(KeyCode.C) && canCrouch == true)
-            {
-                if (isCrouching == false)
-                {
-                    //redundant but for saftey
-                    canRun = false;
-                    isCrouching = true;
-                }
-            }
             else
             {
-                if (isCrouching == true)
+                if (playerState == PLAYER_STATE.RUN)
                 {
-                    canRun = true;
-                    isCrouching = false;
+                    playerState = previousPlayerState;
+                    previousPlayerState = PLAYER_STATE.RUN;
                 }
             }
+        }
 
-
-            if (numObjectsNearPlayer >= 1)
+        if (Input.GetKey(KeyCode.C) && canCrouch == true)
+        {
+            if (isCrouching == false)
             {
-                if (autoSidle == true)
-                {
-                    if (playerState != PLAYER_STATE.SIDLE)
-                    {
-                        playerState = PLAYER_STATE.SIDLE;
-                        canKnock = true;
-                        canThrowRock = true;
-                        canWalk = false;
-                        canRun = false;
-                    }
-                }
-                else if (/* TO DO buttonisPressed*/ true)
+                //redundant but for saftey
+                canRun = false;
+                isCrouching = true;
+            }
+        }
+        else
+        {
+            if (isCrouching == true)
+            {
+                canRun = true;
+                isCrouching = false;
+            }
+        }
+
+
+        if (numObjectsNearPlayer >= 1)
+        {
+            if (autoSidle == true)
+            {
+                if (playerState != PLAYER_STATE.SIDLE)
                 {
                     playerState = PLAYER_STATE.SIDLE;
-                    //sidle;
-                }
-            }
-            ////DELETE AFTER 
-            //else
-            //{
-            //    if (playerState == PLAYER_STATE.SIDLE)
-            //    {
-            //        playerState = previousPlayerState;
-            //        previousPlayerState = PLAYER_STATE.SIDLE;
-            //        canKnock = false;
-            //        canThrowRock = false;
-            //        canWalk = true;
-            //        canRun = true;
-            //    }
-            //}
-
-            //J for knock 
-            if (Input.GetKeyDown(KeyCode.J) && canKnock == true)
-            {
-                if (playerAction != PLAYER_ACTION.KNOCK)
-                {
-                    playerAction = PLAYER_ACTION.KNOCK;
-                    canThrowRock = false;
-                    canTakeDown = false;
-
-                    //TURN THESE BACK ON AFTER THE ANIM
-                }
-            }
-            
-            //K for throwing a rock
-            if(Input.GetKey(KeyCode.K) && canThrowRock == true)
-            {
-                if (playerAction != PLAYER_ACTION.THROWROCK)
-                {
-                    playerAction = PLAYER_ACTION.THROWROCK;
+                    canKnock = true;
+                    canThrowRock = true;
                     canWalk = false;
                     canRun = false;
-
-                    canThrowRock = false;
-                    canTakeDown = false;
-                    //TURN THESE ON AFTER THE ANIM
                 }
-
             }
-
+            else if (/* TO DO buttonisPressed*/ true)
+            {
+                playerState = PLAYER_STATE.SIDLE;
+                //sidle;
+            }
         }
-
-        switch (playerState)
-        {
-            case PLAYER_STATE.STILL:
-                playerMotor.Idle(input);
-                break;
-            case PLAYER_STATE.WALK:
-                    playerMotor.Walk(input);
-                break;
-            case PLAYER_STATE.RUN:
-                playerMotor.Run(input);
-                break;
-            case PLAYER_STATE.SIDLE:
-
-                RaycastHit RayData;
-                Physics.Raycast(transform.position, objectsNearPlayer[0].ClosestPoint(transform.position),out RayData,2,selfCapsuleLayerMask);
-                playerMotor.Sidle(input, RayData.normal, tempFunc);
-                Debug.Log("raydata norm = " + RayData.normal);
-                break;
-        }
-        /*
-         * controller input, wall normal vec3
-         */
-
-        void tempFunc ()
-        {
-
-        }
-
+        ////DELETE AFTER 
+        //else
+        //{
+        //    if (playerState == PLAYER_STATE.SIDLE)
+        //    {
+        //        playerState = previousPlayerState;
+        //        previousPlayerState = PLAYER_STATE.SIDLE;
+        //        canKnock = false;
+        //        canThrowRock = false;
+        //        canWalk = true;
+        //        canRun = true;
+        //    }
+        //}
     }
 
+    private void UpdatePlayerAction()
+    {
+        //J for knock 
+        if (Input.GetKeyDown(KeyCode.J) && canKnock == true)
+        {
+            if (playerAction != PLAYER_ACTION.KNOCK)
+            {
+                playerAction = PLAYER_ACTION.KNOCK;
+                canThrowRock = false;
+                canTakeDown = false;
+
+                //TURN THESE BACK ON AFTER THE ANIM
+            }
+        }
+
+        //K for throwing a rock
+        if (Input.GetKey(KeyCode.K) && canThrowRock == true)
+        {
+            if (playerAction != PLAYER_ACTION.THROWROCK)
+            {
+                playerAction = PLAYER_ACTION.THROWROCK;
+                canWalk = false;
+                canRun = false;
+
+                canThrowRock = false;
+                canTakeDown = false;
+                //TURN THESE ON AFTER THE ANIM
+            }
+        }
+    }
 }
