@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerManager : MonoBehaviour
 {
 
@@ -96,9 +97,15 @@ public class PlayerManager : MonoBehaviour
                 {
                     previousPlayerState = playerState;
                     playerState = PLAYER_STATE.STILL;
+                    canThrowRock = true;
                 }
             }
-            else if (canWalk == true)
+            else if (playerState == PLAYER_STATE.STILL)
+            {
+                    canThrowRock = false;
+            }
+
+            if (canWalk == true && input.magnitude != 0.0f)
             {
                 if (playerState != PLAYER_STATE.WALK)
                 {
@@ -158,6 +165,8 @@ public class PlayerManager : MonoBehaviour
                     if (playerState != PLAYER_STATE.SIDLE)
                     {
                         playerState = PLAYER_STATE.SIDLE;
+                        canKnock = true;
+                        canThrowRock = true;
                         canWalk = false;
                         canRun = false;
                     }
@@ -168,17 +177,48 @@ public class PlayerManager : MonoBehaviour
                     //sidle;
                 }
             }
-            else
+            ////DELETE AFTER 
+            //else
+            //{
+            //    if (playerState == PLAYER_STATE.SIDLE)
+            //    {
+            //        playerState = previousPlayerState;
+            //        previousPlayerState = PLAYER_STATE.SIDLE;
+            //        canKnock = false;
+            //        canThrowRock = false;
+            //        canWalk = true;
+            //        canRun = true;
+            //    }
+            //}
+
+            //J for knock 
+            if (Input.GetKeyDown(KeyCode.J) && canKnock == true)
             {
-                if (playerState == PLAYER_STATE.SIDLE)
+                if (playerAction != PLAYER_ACTION.KNOCK)
                 {
-                    playerState = previousPlayerState;
-                    previousPlayerState = PLAYER_STATE.SIDLE;
-                    canWalk = true;
-                    canRun = true;
+                    playerAction = PLAYER_ACTION.KNOCK;
+                    canThrowRock = false;
+                    canTakeDown = false;
+
+                    //TURN THESE BACK ON AFTER THE ANIM
                 }
             }
+            
+            //K for throwing a rock
+            if(Input.GetKey(KeyCode.K) && canThrowRock == true)
+            {
+                if (playerAction != PLAYER_ACTION.THROWROCK)
+                {
+                    playerAction = PLAYER_ACTION.THROWROCK;
+                    canWalk = false;
+                    canRun = false;
 
+                    canThrowRock = false;
+                    canTakeDown = false;
+                    //TURN THESE ON AFTER THE ANIM
+                }
+
+            }
 
         }
 
