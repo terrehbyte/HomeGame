@@ -12,6 +12,7 @@ public class PlayerManager : MonoBehaviour
     public ARMBAND_STATE armbandState;
     public bool isCrouching;
 
+    public float sidleAngleThreshold = 15.0f;
 
     [Header("DANGER")]
     public float zone1Radius;
@@ -55,7 +56,6 @@ public class PlayerManager : MonoBehaviour
 
     private CapsuleCollider selfCapsuleCollider;
     public Renderer selfRenderer;
-
 
     [Header("Input")]
     private Vector3 input;
@@ -158,7 +158,11 @@ public class PlayerManager : MonoBehaviour
 
         void tempFunc()
         {
-
+            Debug.Log("exit sidle");
+            canWalk = true;
+            canRun = true;
+            playerState = previousPlayerState;
+            previousPlayerState = PLAYER_STATE.SIDLE;
         }
     }
 
@@ -243,7 +247,13 @@ public class PlayerManager : MonoBehaviour
 
         if (numWallsNearPlayer >= 1)
         {
-            if (autoSidle == true)
+            Vector3 dirToWall = (wallsNearPlayer[0].transform.position - transform.position).normalized;
+            Vector3 worldMove = playerMotor.ControllerToWorldDirection(input).normalized;
+
+            float wallAttraction = 1 - Vector3.Dot(worldMove, dirToWall);
+
+            Debug.Log("wallAttraction " + wallAttraction);
+            if (autoSidle == true && (wallAttraction < sidleAngleThreshold))
             {
                 if (playerState != PLAYER_STATE.SIDLE)
                 {
@@ -253,11 +263,6 @@ public class PlayerManager : MonoBehaviour
                     canWalk = false;
                     canRun = false;
                 }
-            }
-            else if (/* TO DO buttonisPressed*/ true)
-            {
-                playerState = PLAYER_STATE.SIDLE;
-                //sidle;
             }
         }
         ////DELETE AFTER 

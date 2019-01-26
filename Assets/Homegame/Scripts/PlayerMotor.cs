@@ -23,9 +23,6 @@ public class PlayerMotor : MonoBehaviour
     public float groundRunAcceleration = 50;
     public float groundRunMaxSpeed = 5.0f;
 
-    public float groundCrouchAcceleration = 50;
-    public float groundCrouchMaxSpeed = 5.0f;
-
     public float groundSidleAcceleration = 50;
     public float groundSidleMaxSpeed = 5.0f;
 
@@ -63,7 +60,7 @@ public class PlayerMotor : MonoBehaviour
         playerCamera = Camera.main;
     }
 
-    Vector3 ControllerToWorldDirection(Vector3 controllerDir)
+    public Vector3 ControllerToWorldDirection(Vector3 controllerDir)
     {
         controllerDir.Normalize();
         controllerDir = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * controllerDir;
@@ -98,15 +95,24 @@ public class PlayerMotor : MonoBehaviour
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
+        // exit if player pulls away from wall
+        if(input.z < 0.0f) { exitSidleCallback.Invoke(); return; }
+
+        sidleAligned = Vector3.Angle(transform.forward, wallForward) < 5.0f;
         if (sidleAligned == false)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(wallForward), sidleAlignmentDegreesPerSecond * Time.deltaTime);
+            // @anim - player turning!
+
+            sidleSurfaceNormal = wallForward;
+            transform.forward = Vector3.RotateTowards(transform.forward, wallForward, Mathf.Deg2Rad * (sidleAlignmentDegreesPerSecond * Time.deltaTime), 0.0f);
 
             return;
         }
 
-        // run this when you detect the sidle is canceled
-        exitSidleCallback.Invoke();
+        Vector3 wishDir = Vector3.ProjectOnPlane(input, wallForward);
+        velocity = MoveGround(input, velocity, groundSidleAcceleration, groundSidleMaxSpeed);
+        Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
+        charController.Move(delta);
     }
 
     public void Idle(Vector3 idleDir)
@@ -206,6 +212,9 @@ public class PlayerMotor : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, Vector3.down * groundCheckLength);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawRay(transform.position, sidleSurfaceNormal * 10.0f);
     }
 
     void Reset()
