@@ -9,6 +9,7 @@ public class PlayerMotor : MonoBehaviour
     public Collider coll;
 
     [Header("Movement")]
+    public float sidleLerpSpeed = 1;
     [ReadOnlyField]
     public Vector3 velocity;
     [ReadOnlyField]
@@ -31,6 +32,13 @@ public class PlayerMotor : MonoBehaviour
     public Collider groundCol;
     [ReadOnlyField]
     public Vector3 groundNorm;
+
+
+    bool AgaintsWall = false;
+    bool startingAngleRecorded = false;
+    Vector3 startingAngle;
+    float sidleLerpNormal = 0;
+    
 
     private void Awake()
     {
@@ -67,9 +75,48 @@ public class PlayerMotor : MonoBehaviour
         charController.Move(delta);
     }
 
-    public void Sidle(Vector3 sidleDir)
+    public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
+        if (AgaintsWall == false)
+        {
+            if (startingAngleRecorded == false)
+            {
+                startingAngleRecorded = true;
+                startingAngle = transform.forward;
+            }
+            float targetAngle =
+                (Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg -
+                Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg) * sidleLerpNormal
+            + Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg;
 
+            //Debug.Log((Mathf.Atan2(wallForward.z, wallForward.x) -
+            //    Mathf.Atan2(startingAngle.z, startingAngle.x)) * Mathf.Rad2Deg);
+
+            Debug.Log(Mathf.Atan2(startingAngle.z, startingAngle.x) * Mathf.Rad2Deg);
+            //Debug.Log(Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg);
+
+            transform.rotation = Quaternion.Euler(0, targetAngle, 0);
+            
+
+            sidleLerpNormal += sidleLerpSpeed * Time.deltaTime;
+
+            if (sidleLerpNormal >= 1 || Mathf.Atan2(wallForward.z, wallForward.x) == Mathf.Atan2(startingAngle.z, startingAngle.x))
+            {
+                transform.rotation = Quaternion.Euler(0, Mathf.Atan2(wallForward.z, wallForward.x) * Mathf.Rad2Deg, 0);
+                startingAngleRecorded = false;
+                AgaintsWall = true;
+            }
+            return;
+        }
+        else
+        {
+            //MOVING ALONG THE WALL
+
+        }
+
+
+        // run this when you detect the sidle is canceled
+        exitSidleCallback.Invoke();
     }
 
     public void Idle(Vector3 idleDir)

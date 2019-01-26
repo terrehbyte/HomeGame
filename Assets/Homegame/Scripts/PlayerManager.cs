@@ -234,15 +234,22 @@ public class PlayerManager : MonoBehaviour
             case PLAYER_STATE.RUN:
                 playerMotor.Run(input);
                 break;
+            case PLAYER_STATE.SIDLE:
+
+                RaycastHit RayData;
+                Physics.Raycast(transform.position, objectsNearPlayer[0].ClosestPoint(transform.position),out RayData,2,selfCapsuleLayerMask);
+                playerMotor.Sidle(input, RayData.normal, tempFunc);
+                Debug.Log("raydata norm = " + RayData.normal);
+                break;
         }
         /*
          * controller input, wall normal vec3
          */
 
+        void tempFunc ()
+        {
 
-
-
-
+        }
 
     }
 
