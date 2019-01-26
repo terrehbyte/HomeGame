@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class PlayerMotor : MonoBehaviour
 {
+    [Header("Components")]
     public CharacterController charController;
     public Collider coll;
-    public float speed = 5.0f;
 
+    [Header("Movement")]
+    public float speed = 5.0f;
+    public Camera playerCamera;
+
+    [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
     public LayerMask groundCheckLayer;
     [HideInInspector]
@@ -36,6 +41,7 @@ public class PlayerMotor : MonoBehaviour
                                     Input.GetAxisRaw("Vertical"));
 
         input.Normalize();
+        input = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * input;
         input = Vector3.ProjectOnPlane(input, groundNorm);
         input *= speed * Time.deltaTime;
 
@@ -43,7 +49,6 @@ public class PlayerMotor : MonoBehaviour
         {
             charController.Move(input);
         }
-
     }
 
     void OnDrawGizmos()
