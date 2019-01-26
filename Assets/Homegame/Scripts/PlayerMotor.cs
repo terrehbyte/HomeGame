@@ -11,6 +11,7 @@ public class PlayerMotor : MonoBehaviour
     [Header("Movement")]
     [ReadOnlyField]
     public Vector3 velocity;
+    [ReadOnlyField]
     public Camera playerCamera;
     public float groundFriction = 11;
 
@@ -31,6 +32,11 @@ public class PlayerMotor : MonoBehaviour
     [ReadOnlyField]
     public Vector3 groundNorm;
 
+    private void Awake()
+    {
+        playerCamera = Camera.main;
+    }
+
     Vector3 ControllerToWorldDirection(Vector3 controllerDir)
     {
         controllerDir.Normalize();
@@ -42,6 +48,7 @@ public class PlayerMotor : MonoBehaviour
 
     public void Walk(Vector3 walkDir)
     {
+        Debug.Log("WALKING");
         Vector3 input = ControllerToWorldDirection(walkDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -51,6 +58,8 @@ public class PlayerMotor : MonoBehaviour
 
     public void Run(Vector3 runDir)
     {
+
+        Debug.Log("RUNNING");
         Vector3 input = ControllerToWorldDirection(runDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -65,6 +74,8 @@ public class PlayerMotor : MonoBehaviour
 
     public void Idle(Vector3 idleDir)
     {
+
+        Debug.Log("IDLE");
     }
 
     void startCrouch()

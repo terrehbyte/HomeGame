@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public PlayerMotor playerMotor;
 
     public PLAYER_STATE playerState;
     public PLAYER_ACTION playerAction;
@@ -222,6 +223,18 @@ public class PlayerManager : MonoBehaviour
 
         }
 
+        switch (playerState)
+        {
+            case PLAYER_STATE.STILL:
+                playerMotor.Idle(input);
+                break;
+            case PLAYER_STATE.WALK:
+                    playerMotor.Walk(input);
+                break;
+            case PLAYER_STATE.RUN:
+                playerMotor.Run(input);
+                break;
+        }
         /*
          * controller input, wall normal vec3
          */
