@@ -13,9 +13,16 @@ public class PlayerManager : MonoBehaviour
     public bool isCrouching;
 
 
+    [Header("DANGER")]
+    public float zone1Radius;
+    [Header("Semi-Danger")]
+    public float zone2Radius;
+
     public bool autoSidle;
-    public LayerMask selfCapsuleLayerMask;
+    public LayerMask enviromentLayerMask;
     public float triggerCapsuleRadiusOffset;
+
+    public LayerMask enemyLayerMask;
 
     public bool canMove = true;
     [ReadOnlyField]
@@ -34,10 +41,17 @@ public class PlayerManager : MonoBehaviour
     public bool canTakeDown = false;
 
     [SerializeField]
-    private int numObjectsNearPlayer;
-    private Collider[] objectsNearPlayer = new Collider[1];
+    //FOR WALL DETECTION
+    private int numWallsNearPlayer;
+    private Collider[] wallsNearPlayer = new Collider[1];
     private Vector3 triggerCapsuleTop;
     private Vector3 triggerCapsuleBot;
+
+    //For Enemy Detection
+    private int numEnemiesNearPlayer;
+    private Collider[] enemiesNearPlayer = new Collider[1];
+
+
 
     private CapsuleCollider selfCapsuleCollider;
     public Renderer selfRenderer;
@@ -47,6 +61,8 @@ public class PlayerManager : MonoBehaviour
     private Vector3 input;
     [ReadOnlyField]
     public PLAYER_STATE previousPlayerState;
+    private bool crouched = false;
+    private Material armbandMaterial;
 
     public enum PLAYER_STATE
     {
@@ -65,21 +81,20 @@ public class PlayerManager : MonoBehaviour
 
     public enum ARMBAND_STATE
     {
-        OFF,
-        BLINK,
-        SOLID
+        SAFE,
+        SEMIDANGER,
+        DANGER
     }
 
     void Start()
     {
         selfCapsuleCollider = this.GetComponent<CapsuleCollider>();
         selfRenderer = this.GetComponent<Renderer>();
+        armbandMaterial = GameObject.FindGameObjectWithTag("Armband").GetComponent<Renderer>().material;
     }
 
     void Update()
     {
-
-
         if (canMove == false)
         {
             //cant move
@@ -89,6 +104,8 @@ public class PlayerManager : MonoBehaviour
             UpdatePlayerState();
             UpdatePlayerAction();
         }
+
+        UpdatePlayerArmband();
 
         switch (playerState)
         {
@@ -104,9 +121,38 @@ public class PlayerManager : MonoBehaviour
             case PLAYER_STATE.SIDLE:
 
                 RaycastHit RayData;
-                Physics.Raycast(transform.position, objectsNearPlayer[0].ClosestPoint(transform.position), out RayData, 2, selfCapsuleLayerMask);
+                Physics.Raycast(transform.position, wallsNearPlayer[0].ClosestPoint(transform.position), out RayData, 2, enviromentLayerMask);
                 playerMotor.Sidle(input, RayData.normal, tempFunc);
                 Debug.Log("raydata norm = " + RayData.normal);
+                break;
+        }
+        if (isCrouching == true)
+        {
+            if (crouched == false)
+            {
+                playerMotor.StartCrouch();
+                crouched = true;
+            }
+        }
+        else if (isCrouching == false)
+        {
+            if (crouched == true)
+            {
+                playerMotor.StopCrouch();
+                crouched = false;
+            }
+        }
+
+        switch (armbandState)
+        {
+            case ARMBAND_STATE.SAFE:
+                armbandMaterial.color = Color.green;
+                break;
+            case ARMBAND_STATE.SEMIDANGER:
+                armbandMaterial.color = Color.blue;
+                break;
+            case ARMBAND_STATE.DANGER:
+                armbandMaterial.color = Color.red;
                 break;
         }
 
@@ -119,9 +165,9 @@ public class PlayerManager : MonoBehaviour
     private void UpdatePlayerState()
     {
         triggerCapsuleTop = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-        triggerCapsuleBot = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+        triggerCapsuleBot = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
         //note for future, this can also take in a QueryTriggerInteraction to descide if it works on triggers
-        numObjectsNearPlayer = Physics.OverlapCapsuleNonAlloc(triggerCapsuleTop, triggerCapsuleBot, selfCapsuleCollider.radius * transform.localScale.x + triggerCapsuleRadiusOffset, objectsNearPlayer, selfCapsuleLayerMask);
+        numWallsNearPlayer = Physics.OverlapCapsuleNonAlloc(triggerCapsuleTop, triggerCapsuleBot, selfCapsuleCollider.radius * transform.localScale.x + triggerCapsuleRadiusOffset, wallsNearPlayer, enviromentLayerMask);
 
 
         input = new Vector3(Input.GetAxisRaw("Horizontal"),
@@ -195,7 +241,7 @@ public class PlayerManager : MonoBehaviour
         }
 
 
-        if (numObjectsNearPlayer >= 1)
+        if (numWallsNearPlayer >= 1)
         {
             if (autoSidle == true)
             {
@@ -256,6 +302,31 @@ public class PlayerManager : MonoBehaviour
                 canThrowRock = false;
                 canTakeDown = false;
                 //TURN THESE ON AFTER THE ANIM
+            }
+        }
+    }
+
+    private void UpdatePlayerArmband()
+    {
+        numEnemiesNearPlayer = Physics.OverlapSphereNonAlloc(transform.position, zone2Radius, enemiesNearPlayer,enemyLayerMask);
+        if (numEnemiesNearPlayer == 0)
+        {
+            armbandState = ARMBAND_STATE.SAFE;
+        }
+        else
+        {
+            for (int i = 0; i < numEnemiesNearPlayer; i++)
+            {
+                float distanceFromEnemy = Vector3.Distance(enemiesNearPlayer[i].transform.position, transform.position);
+
+                if (distanceFromEnemy <= zone1Radius)
+                {
+                    armbandState = ARMBAND_STATE.DANGER;
+                }
+                else
+                {
+                    armbandState = ARMBAND_STATE.SEMIDANGER;
+                }
             }
         }
     }
