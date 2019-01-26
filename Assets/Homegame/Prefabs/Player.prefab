@@ -129,8 +129,8 @@ MonoBehaviour:
   coll: {fileID: 2171536950022498248}
   velocity: {x: 0, y: 0, z: 0}
   playerCamera: {fileID: 0}
-  groundFriction: 1
-  groundAcceleration: 20
+  groundFriction: 11
+  groundAcceleration: 50
   groundMaxSpeed: 5
   groundCheckLength: 1.5
   groundCheckLayer:
@@ -157,11 +157,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   triggerCapsuleRadiusOffset: 0.75
-  canWalk: 0
-  canRun: 0
-  canCrouch: 0
+  canMove: 1
+  canWalk: 1
+  canRun: 1
+  canCrouch: 1
   canSidle: 0
   canKnock: 0
   canThrowRock: 0
   canTakeDown: 0
   numObjectsNearPlayer: 0
+  previousPlayerState: 0
