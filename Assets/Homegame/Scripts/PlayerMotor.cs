@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMotor : MonoBehaviour
+public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 {
     [Header("Components")]
     public CharacterController charController;
@@ -303,5 +303,10 @@ public class PlayerMotor : MonoBehaviour
     {
         charController = GetComponent<CharacterController>();
         coll = GetComponent<CapsuleCollider>();
+    }
+
+    public void OnStateChanged(AnimatorEventInfo eventInfo)
+    {
+
     }
 }
