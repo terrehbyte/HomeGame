@@ -52,14 +52,15 @@ public class PlayerManager : MonoBehaviour
     public bool canTakeDown = false;
 
     //For sidle detection
-    public Vector3 sidleWallNormal { get; private set; }
-    public Collider sidleWallCollider { get; private set; }
+    public Vector3 sidleWallNormal {get; private set;}
+    public Collider sidleWallCollider {get; private set;}
+    public Vector3 sidleWallEntryPoint {get; private set;}
 
     //For Enemy Detection
     private int numEnemiesNearPlayer;
     private Collider[] enemiesNearPlayer = new Collider[1];
 
-    private CapsuleCollider selfCapsuleCollider;
+    public CapsuleCollider selfCapsuleCollider;
     public Renderer selfRenderer;
 
 
@@ -326,6 +327,7 @@ public class PlayerManager : MonoBehaviour
 
                     sidleWallNormal = sidleCandidates[0].normal;
                     sidleWallCollider = sidleCandidates[0].collider;
+                    sidleWallEntryPoint = sidleCandidates[0].point;
                 }
             }
         }
