@@ -171,6 +171,7 @@ MonoBehaviour:
   sidleAngleThreshold: 0.6
   zone1Radius: 10
   zone2Radius: 15
+  sidleProximity: 1
   autoSidle: 1
   enviromentLayerMask:
     serializedVersion: 2
@@ -187,7 +188,6 @@ MonoBehaviour:
   canKnock: 0
   canThrowRock: 0
   canTakeDown: 0
-  numWallsNearPlayer: 0
   selfRenderer: {fileID: 0}
   previousPlayerState: 0
 --- !u!1 &3154605741889760840

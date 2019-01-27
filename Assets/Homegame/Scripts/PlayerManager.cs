@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class PlayerManager : MonoBehaviour
 {
     public PlayerMotor playerMotor;
@@ -27,7 +26,8 @@ public class PlayerManager : MonoBehaviour
     public float highBlinkSpeed;
     public float blinkSpeed;
 
-
+    public float sidleProximity = 1.0f;
+    
     public bool autoSidle;
     public LayerMask enviromentLayerMask;
     public float triggerCapsuleRadiusOffset;
@@ -50,18 +50,12 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public bool canTakeDown = false;
 
-    [SerializeField]
-    //FOR WALL DETECTION
-    private int numWallsNearPlayer;
-    private Collider[] wallsNearPlayer = new Collider[1];
-    private Vector3 triggerCapsuleTop;
-    private Vector3 triggerCapsuleBot;
+    //For sidle detection
+    private Vector3 sidleWallNormal;
 
     //For Enemy Detection
     private int numEnemiesNearPlayer;
     private Collider[] enemiesNearPlayer = new Collider[1];
-
-
 
     private CapsuleCollider selfCapsuleCollider;
     public Renderer selfRenderer;
@@ -132,11 +126,7 @@ public class PlayerManager : MonoBehaviour
                 playerMotor.Run(input);
                 break;
             case PLAYER_STATE.SIDLE:
-
-                RaycastHit RayData;
-                Physics.Raycast(transform.position, wallsNearPlayer[0].ClosestPoint(transform.position), out RayData, 2, enviromentLayerMask);
-                playerMotor.Sidle(input, RayData.normal, tempFunc);
-                Debug.Log("raydata norm = " + RayData.normal);
+                playerMotor.Sidle(input, sidleWallNormal, tempFunc);
                 break;
         }
         if (isCrouching == true)
@@ -206,13 +196,11 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    RaycastHit[] sidleCandidates;
+
     private void UpdatePlayerState()
     {
-        triggerCapsuleTop = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-        triggerCapsuleBot = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-        //note for future, this can also take in a QueryTriggerInteraction to descide if it works on triggers
-        numWallsNearPlayer = Physics.OverlapCapsuleNonAlloc(triggerCapsuleTop, triggerCapsuleBot, selfCapsuleCollider.radius * transform.localScale.x + triggerCapsuleRadiusOffset, wallsNearPlayer, enviromentLayerMask);
-
+        sidleCandidates = Physics.RaycastAll(transform.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore  );
 
         input = new Vector3(Input.GetAxisRaw("Horizontal"),
                                    0.0f,
@@ -285,15 +273,9 @@ public class PlayerManager : MonoBehaviour
         }
 
 
-        if (numWallsNearPlayer >= 1)
+        if (sidleCandidates.Length > 0)
         {
-            Vector3 dirToWall = (wallsNearPlayer[0].transform.position - transform.position).normalized;
-            Vector3 worldMove = playerMotor.ControllerToWorldDirection(input).normalized;
-
-            float wallAttraction = 1 - Vector3.Dot(worldMove, dirToWall);
-
-            Debug.Log("wallAttraction " + wallAttraction);
-            if (autoSidle == true && (wallAttraction < sidleAngleThreshold))
+            if (autoSidle == true)
             {
                 if (playerState != PLAYER_STATE.SIDLE)
                 {
@@ -302,6 +284,8 @@ public class PlayerManager : MonoBehaviour
                     canThrowRock = true;
                     canWalk = false;
                     canRun = false;
+
+                    sidleWallNormal = sidleCandidates[0].normal;
                 }
             }
         }
@@ -316,7 +300,7 @@ public class PlayerManager : MonoBehaviour
         //        canThrowRock = false;
         //        canWalk = true;
         //        canRun = true;
-        //    }
+        //    }1
         //}
     }
 
@@ -374,5 +358,11 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, transform.forward * sidleProximity);
     }
 }

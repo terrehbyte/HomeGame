@@ -43,7 +43,6 @@ public class PlayerMotor : MonoBehaviour
     [Header("Sidle")]
     public float sidleAlignmentDegreesPerSecond = 90.0f;
     bool sidleAligned = false;
-    bool sidleSurfaceKnown = false;
     Vector3 sidleSurfaceNormal;
 
     [Header("Ground Check")]
@@ -97,6 +96,7 @@ public class PlayerMotor : MonoBehaviour
     {
         // exit if player pulls away from wall
         if(input.z < 0.0f) { exitSidleCallback.Invoke(); return; }
+        input.z = 0.0f;
 
         sidleAligned = Vector3.Angle(transform.forward, wallForward) < 5.0f;
         if (sidleAligned == false)
@@ -109,8 +109,8 @@ public class PlayerMotor : MonoBehaviour
             return;
         }
 
-        Vector3 wishDir = Vector3.ProjectOnPlane(input, wallForward);
-        velocity = MoveGround(input, velocity, groundSidleAcceleration, groundSidleMaxSpeed);
+        Vector3 worldWishDir = Quaternion.Euler(0, Quaternion.LookRotation(-wallForward, Vector3.up).eulerAngles.y, 0) * input;
+        velocity = MoveGround(worldWishDir, velocity, groundSidleAcceleration, groundSidleMaxSpeed);
         Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
         charController.Move(delta);
     }
