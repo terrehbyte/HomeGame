@@ -1,0 +1,15 @@
+State Group	ID	Name			Wwise Object Path	Notes
+	4265607304	attackState			\Default Work Unit\attackState	
+
+State	ID	Name	State Group			Notes
+	0	None	attackState			
+	180661997	Attack	attackState			
+	3497767639	Patrol	attackState			
+
+Audio Bus	ID	Name			Wwise Object Path	Notes
+	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
+
+Audio Devices	ID	Name	Type				Notes
+	2317455096	No_Output	No Output			
+	3859886410	System	System			
+
