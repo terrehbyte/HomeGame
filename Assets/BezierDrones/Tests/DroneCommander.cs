@@ -9,6 +9,7 @@ public class DroneCommander : MonoBehaviour
     NavMeshAgent[] agents;
 
 
+
     RaycastHit hit;
     // Use this for initialization
     void Start()
