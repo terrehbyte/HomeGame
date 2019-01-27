@@ -8,6 +8,7 @@ public class PlayerMotor : MonoBehaviour
     public CharacterController charController;
     public CapsuleCollider coll;
     public PlayerManager manager;
+    [SerializeField] Animator animator;
 
     [Header("Movement")]
     public float sidleLerpSpeed = 1;
@@ -86,6 +87,7 @@ public class PlayerMotor : MonoBehaviour
         charController.Move(delta);
 
         transform.forward = velocity.normalized;
+        animator.SetFloat("Speed", velocity.magnitude);
     }
 
     public void Run(Vector3 runDir)
@@ -97,6 +99,7 @@ public class PlayerMotor : MonoBehaviour
         charController.Move(delta);
 
         transform.forward = velocity.normalized;
+        animator.SetFloat("Speed", velocity.magnitude);
     }
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
