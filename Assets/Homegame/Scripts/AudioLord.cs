@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class AudioLord : MonoBehaviour
 {
-    public AudioListener playerListener;
 
     public AudioSource musicSource1;
     public AudioSource musicSource2;
@@ -25,7 +24,6 @@ public class AudioManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerListener = playerObject.AddComponent<AudioListener>();
 
         musicSource1 = playerObject.AddComponent<AudioSource>();
         musicSource2 = playerObject.AddComponent<AudioSource>();
@@ -45,13 +43,7 @@ public class AudioManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if (Input.GetKey("h")) {
-            fadeOutIn(musicSource1, musicSource2);
-        }
-        if (Input.GetKeyDown("j"))
-        {
 
-        }*/
     }
 
     public void fadeOutIn(AudioSource fadeOutSource, AudioSource fadeInSource) {

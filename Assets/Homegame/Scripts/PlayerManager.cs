@@ -11,11 +11,13 @@ public class PlayerManager : MonoBehaviour
     public ARMBAND_STATE armbandState;
     public bool isCrouching;
 
+    [Range(0.0f,1.0f)]
+    public float runLimit;
 
-    [ReadOnlyField]
-    public PlayerMotor playerMotor;
-    [ReadOnlyField]
-    public InputManager inputManager;
+    [SerializeField]
+    private PlayerMotor playerMotor;
+    [SerializeField]
+    private InputManager inputManager;
 
     [Header("ARMBAND SHIT")]
 
@@ -51,16 +53,15 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Sidle Shit")]
     public float sidleAngleThreshold = 15.0f;
-    public float runLimit;
     public float sidleProximity = 1.0f;
     public bool autoSidle;
     public LayerMask enviromentLayerMask;
     public float triggerCapsuleRadiusOffset;
     public LayerMask enemyLayerMask;
     //For sidle detection
-    public Vector3 sidleWallNormal {get; private set;}
-    public Collider sidleWallCollider {get; private set;}
-    public Vector3 sidleWallEntryPoint {get; private set;}
+    public Vector3 sidleWallNormal { get; private set; }
+    public Collider sidleWallCollider { get; private set; }
+    public Vector3 sidleWallEntryPoint { get; private set; }
 
     [Header("Takedown Shit")]
     //For Enemy Detection
@@ -71,7 +72,7 @@ public class PlayerManager : MonoBehaviour
     private int numEnemiesAbovePlayer;
     private Collider[] enemiesAbovePlayer = new Collider[1];
 
-
+    
     [ReadOnlyField]
     public PLAYER_STATE previousPlayerState;
     private bool crouched = false;
@@ -82,7 +83,7 @@ public class PlayerManager : MonoBehaviour
 
     //GAMEPAD SHIT
 
-    
+
 
     public enum PLAYER_STATE
     {
@@ -113,19 +114,20 @@ public class PlayerManager : MonoBehaviour
         canMove = false;
 
         selfCapsuleCollider = this.GetComponent<CapsuleCollider>();
-        playerMotor = this.GetComponent<PlayerMotor>();
         armbandMeshRenderer = GameObject.FindGameObjectWithTag("Armband").GetComponent<MeshRenderer>();
-        inputManager = gameObject.GetComponent<InputManager>();
+        playerMotor = this.GetComponent<PlayerMotor>();
+        inputManager = this.GetComponent<InputManager>();
     }
 
     void Update()
     {
+
         blinkTime += Time.deltaTime;
         blinkTime2 += Time.deltaTime;
 
         if (canMove == false)
         {
-            //cant move
+            inputManager.input = new Vector3();
         }
         else
         {
@@ -141,10 +143,16 @@ public class PlayerManager : MonoBehaviour
                 playerMotor.Idle(inputManager.input);
                 break;
             case PLAYER_STATE.WALK:
+                if (canMove == true)
+                {
                 playerMotor.Walk(inputManager.input);
+                }
                 break;
             case PLAYER_STATE.RUN:
-                playerMotor.Run(inputManager.input);
+                if (canMove == true)
+                {
+                    playerMotor.Run(inputManager.input);
+                }
                 break;
             case PLAYER_STATE.SIDLE:
                 playerMotor.Sidle(inputManager.input, sidleWallNormal, StopSidle);
@@ -190,13 +198,19 @@ public class PlayerManager : MonoBehaviour
             case ARMBAND_STATE.SAFE:
                 if (blinkTime >= 1 / slowBlinkSpeed)
                 {
+                    Debug.Log("NOBLINNK");
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.material = armbandMatActive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.material = armbandMatInactive;
+                    
+                    Debug.Log("BLINNK");
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
+
                 }
                 break;
             case ARMBAND_STATE.SEMIDANGER:
@@ -204,11 +218,13 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.material = armbandMatActive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.material = armbandMatInactive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
                 }
                 break;
             case ARMBAND_STATE.DANGER:
@@ -216,23 +232,29 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.material = armbandMatActive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.material = armbandMatInactive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
                 }
                 break;
             case ARMBAND_STATE.ATTACK:
-                armbandMeshRenderer.material = armbandMatAttack;
+                armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatAttack.GetColor("_Color"));
+                armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatAttack.GetColor("_EmissionColor"));
                 break;
         }
 
         void StopSidle()
         {
+            canMove = true;
+
             canWalk = true;
             canRun = true;
-            playerState = previousPlayerState;
+            canKnock = false;
+            playerState = PLAYER_STATE.STILL;
             previousPlayerState = PLAYER_STATE.SIDLE;
         }
 
@@ -241,14 +263,14 @@ public class PlayerManager : MonoBehaviour
             canWalk = true;
             canRun = true;
             canCrouch = true;
+            canMove = true;
             playerAction = PLAYER_ACTION.NOACTION;
         }
 
         void StopKnock()
         {
             playerAction = PLAYER_ACTION.NOACTION;
-            canWalk = true;
-            canRun = true;
+            canMove = true;
             canCrouch = true;
         }
 
@@ -288,7 +310,7 @@ public class PlayerManager : MonoBehaviour
                 playerState = PLAYER_STATE.WALK;
             }
 
-            if ( (Input.GetKey(KeyCode.LeftShift) || inputManager.input.magnitude >= runLimit) && canRun == true)
+            if ((Input.GetKey(KeyCode.LeftShift) || inputManager.input.magnitude >= runLimit) && canRun == true)
             {
                 if (playerState != PLAYER_STATE.RUN)
                 {
@@ -314,7 +336,7 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        if ( (Input.GetKey(KeyCode.C) || inputManager.gamepadA) && canCrouch == true)
+        if ((Input.GetKey(KeyCode.C) || inputManager.gamepadA) && canCrouch == true)
         {
             if (isCrouching == false)
             {
@@ -323,16 +345,21 @@ public class PlayerManager : MonoBehaviour
                 canRun = false;
                 isCrouching = true;
             }
+            if (isCrouching == true)
+            {
+                canKnock = false;
+                canRun = false;
+            }
         }
         else
         {
-            if (isCrouching == true)
+            if(playerState == PLAYER_STATE.SIDLE)
             {
                 canKnock = true;
-                canRun = true;
-                
-                isCrouching = false;
             }
+
+            isCrouching = false;
+            canRun = true;
         }
 
         if (sidleCandidates.Length > 0)
@@ -343,7 +370,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     playerState = PLAYER_STATE.SIDLE;
                     canKnock = true;
-                    canThrowRock = true;
+                    //canThrowRock = true;
                     canWalk = false;
                     canRun = false;
 
@@ -372,45 +399,38 @@ public class PlayerManager : MonoBehaviour
             canTakeDown = true;
         }
 
-        if ( (Input.GetKey(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
+        //Take down
+        if ((Input.GetKeyDown(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
         {
-            canKnock = false;
-            canThrowRock = false;
-            canWalk = false;
-            canRun = false;
-            canCrouch = false;
+            canMove = false;
             playerAction = PLAYER_ACTION.TAKEDOWN;
         }
 
         //J for knock 
-        if ( (Input.GetKey(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
+        if ((Input.GetKeyDown(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
         {
             if (playerAction != PLAYER_ACTION.KNOCK)
-            {
+            {             
                 playerAction = PLAYER_ACTION.KNOCK;
-                canThrowRock = false;
-                canTakeDown = false;
-                canWalk = false;
-                canRun = false;
                 canCrouch = false;
+                canMove = false;
                 //TURN THESE BACK ON AFTER THE ANIM
             }
         }
-        
-        //K for throwing a rock
-        if ( (Input.GetKey(KeyCode.K) || inputManager.gamepadY) && canThrowRock == true)
-        {
-            if (playerAction != PLAYER_ACTION.THROWROCK)
-            {
-                playerAction = PLAYER_ACTION.THROWROCK;
-                canWalk = false;
-                canRun = false;
 
-                canThrowRock = false;
-                canTakeDown = false;
-                //TURN THESE ON AFTER THE ANIM
-            }
-        }
+        ////K for throwing a rock
+        //if ((Input.GetKey(KeyCode.K) || inputManager.gamepadY) && canThrowRock == true)
+        //{
+        //    if (playerAction != PLAYER_ACTION.THROWROCK)
+        //    {
+        //        playerAction = PLAYER_ACTION.THROWROCK;
+        //        canWalk = false;
+        //        canRun = false;
+        //        canThrowRock = false;
+        //        canTakeDown = false;
+        //        canMove = false;
+        //    }
+        //}
     }
 
     private void UpdatePlayerArmband()

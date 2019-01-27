@@ -9,6 +9,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public CapsuleCollider coll;
     public PlayerManager manager;
     [SerializeField] Animator animator;
+    public Renderer characterRenderer;
 
     [Header("Movement")]
     public float sidleLerpSpeed = 1;
@@ -65,6 +66,11 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public Vector3 groundNorm;
     private float DELETEME;
 
+
+     private bool wakeUpAnimationFinished = false;
+     private bool takedownAnimationFinished = false;
+     private bool knockAnimationFinished = false;
+
     private void Awake()
     {
         playerCamera = Camera.main;
@@ -110,9 +116,10 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
-        sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
+        //sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
         sidleCamera.gameObject.SetActive(true);
         var vcam = sidleCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
+        vcam.Follow = vcam.LookAt = manager.transform;
         var transposer = vcam.GetCinemachineComponent<Cinemachine.CinemachineComposer>();
         transposer.m_TrackedObjectOffset = new Vector3(-Input.GetAxis("Mouse X") * sidleCameraTargetOffset, 0.0f, 0.0f);
 
@@ -122,6 +129,8 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
             animator.SetBool("isSidle", false);
             animator.SetFloat("Speed", velocity.magnitude);
 
+            vcam.Follow = null;
+            vcam.LookAt = null;
             sidleCamera.gameObject.SetActive(false);
             exitSidleCallback.Invoke();
             return;
@@ -197,29 +206,30 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
 
         animator.SetTrigger("Takedown");
-        //LEGIT JUST TO SIMULATE TAKING DOWN
-        DELETEME += Time.deltaTime;
-        if (DELETEME >= 2/3)
+        if (takedownAnimationFinished == true)
         {
             GameObject.Destroy(enemy);
-            exitCallback();
+            takedownAnimationFinished = false;
+            exitCallback.Invoke();
         }
 
     }
 
     public void doKnock(System.Action exitCallback)
     {
-        //DO SHIT
         animator.SetTrigger("Knocked");
-        exitCallback();
+        if (knockAnimationFinished == true)
+        {
+            knockAnimationFinished = false;
+            exitCallback.Invoke();
+        }
     }
 
     public void doWakeUp(System.Action exitCallback)
-    {
-        //DO SHIT
-        if(/* Animation is done*/ true)
+    {   
+        if(wakeUpAnimationFinished ==  true)
         {
-            exitCallback();
+            exitCallback.Invoke();
         }
     }
 
@@ -259,6 +269,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     private Vector3 Impulse(Vector3 impulse, Vector3 prevVelocity)
     {
+        if(impulse.y > 0) { grounded = false; }
         return prevVelocity + impulse;
     }
 
@@ -287,8 +298,11 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
         bool wasGrounded = grounded;
         grounded = PerformGroundCheck(transform.position, groundCheckLength, out groundCol, out groundNorm);
+
         crouchTimer += (crouchWish ? 1.0f : 0.0f) * Time.deltaTime;
+        
         charController.height = coll.height = Mathf.Lerp(standHeight, crouchHeight, crouchProgress);
+        //charController.height = coll.height = characterRenderer.bounds.size.y;
         charController.center = coll.center = Vector3.up * (charController.height - 2) / 2;
 
         if(!wasGrounded && grounded)
@@ -298,7 +312,9 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         if(!grounded)
         {
             velocity = Accelerate(Vector3.down, velocity, 9.8f, 53.0f );
+            charController.Move(velocity * Time.deltaTime);
         }
+
     }
 
     void OnDrawGizmos()
@@ -321,6 +337,23 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     public void OnStateChanged(AnimatorEventInfo eventInfo)
     {
+        if (eventInfo.message == "KnockEnd")
+        {
+            Debug.Log("Knock stop");
+            knockAnimationFinished = true;
+        }
+
+        if (eventInfo.message == "TakedownExit")
+        {
+            Debug.Log("Takedown stop");
+            takedownAnimationFinished = true;
+        }
+
+        if (eventInfo.message == "OpeningExit")
+        {
+            Debug.Log("Openning stop");
+            wakeUpAnimationFinished = true;
+        }
 
     }
 }
