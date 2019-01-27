@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class TriggerData : MonoBehaviour
 {
-    public Sprite button;
+    private void Start()
+    {
+        if(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>().showTriggers == false)
+        {
+            this.GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
+    
     public string textUI;
 
 }

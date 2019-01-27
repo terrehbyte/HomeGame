@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class TriggerManager : MonoBehaviour
 {
@@ -10,18 +11,29 @@ public class TriggerManager : MonoBehaviour
      * 
      */
 
-
+    public  TextMeshProUGUI textBox;
     private bool shitChanged;
     private string text;
     private Collider lastCollider;
 
+    private void Start()
+    {
+        text = "";
+        shitChanged = true;
+    }
     // Update is called once per frame
     void Update()
     {
+        if (textBox == null)
+        {
+            Debug.Log("MISSING UI ELEMENT");
+            return;
+        }
+
         if (shitChanged == true)
         {
             shitChanged = false;
-            Debug.Log("TEXT: " + text);
+            textBox.text = text;
         }
     }
 
