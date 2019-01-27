@@ -165,9 +165,10 @@ public class PlayerMotor : MonoBehaviour
 
     }
 
-    void doKnock()
+    public void doKnock(System.Action exitCallback)
     {
-
+        //DO SHIT
+        exitCallback();
     }
 
     // Returns the player's new velocity when moving on the ground
