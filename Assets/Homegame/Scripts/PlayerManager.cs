@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
     private int numEnemiesAbovePlayer;
     private Collider[] enemiesAbovePlayer = new Collider[1];
 
-
+    
     [ReadOnlyField]
     public PLAYER_STATE previousPlayerState;
     private bool crouched = false;
@@ -122,19 +122,13 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        if (playerMotor == null)
-        {
-            Debug.Log("reeeeee");
-            playerMotor = this.GetComponent<PlayerMotor>();
-            inputManager = this.GetComponent<InputManager>();
-        }
 
         blinkTime += Time.deltaTime;
         blinkTime2 += Time.deltaTime;
 
         if (canMove == false)
         {
-            //cant move
+            inputManager.input = new Vector3();
         }
         else
         {
@@ -150,10 +144,16 @@ public class PlayerManager : MonoBehaviour
                 playerMotor.Idle(inputManager.input);
                 break;
             case PLAYER_STATE.WALK:
+                if (canMove == true)
+                {
                 playerMotor.Walk(inputManager.input);
+                }
                 break;
             case PLAYER_STATE.RUN:
-                playerMotor.Run(inputManager.input);
+                if (canMove == true)
+                {
+                    playerMotor.Run(inputManager.input);
+                }
                 break;
             case PLAYER_STATE.SIDLE:
                 playerMotor.Sidle(inputManager.input, sidleWallNormal, StopSidle);
@@ -201,10 +201,11 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.materials[1]     = armbandMatActive;
+                    armbandMeshRenderer.materials[1] = armbandMatActive;
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
+                    Debug.Log("BLINNK");
                     armbandMeshRenderer.materials[1] = armbandMatInactive;
                 }
                 break;
@@ -243,7 +244,8 @@ public class PlayerManager : MonoBehaviour
 
             canWalk = true;
             canRun = true;
-            playerState = previousPlayerState;
+            canKnock = false;
+            playerState = PLAYER_STATE.STILL;
             previousPlayerState = PLAYER_STATE.SIDLE;
         }
 
@@ -260,8 +262,6 @@ public class PlayerManager : MonoBehaviour
         {
             playerAction = PLAYER_ACTION.NOACTION;
             canMove = true;
-            canWalk = true;
-            canRun = true;
             canCrouch = true;
         }
 
@@ -335,16 +335,21 @@ public class PlayerManager : MonoBehaviour
                 canRun = false;
                 isCrouching = true;
             }
+            if (isCrouching == true)
+            {
+                canKnock = false;
+                canRun = false;
+            }
         }
         else
         {
-            if (isCrouching == true)
+            if(playerState == PLAYER_STATE.SIDLE)
             {
                 canKnock = true;
-                canRun = true;
-
-                isCrouching = false;
             }
+
+            isCrouching = false;
+            canRun = true;
         }
 
         if (sidleCandidates.Length > 0)
@@ -355,7 +360,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     playerState = PLAYER_STATE.SIDLE;
                     canKnock = true;
-                    canThrowRock = true;
+                    //canThrowRock = true;
                     canWalk = false;
                     canRun = false;
 
@@ -384,27 +389,19 @@ public class PlayerManager : MonoBehaviour
             canTakeDown = true;
         }
 
-        if ((Input.GetKey(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
+        //Take down
+        if ((Input.GetKeyDown(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
         {
-            canKnock = false;
-            canThrowRock = false;
-            canWalk = false;
-            canRun = false;
-            canCrouch = false;
             canMove = false;
             playerAction = PLAYER_ACTION.TAKEDOWN;
         }
 
         //J for knock 
-        if ((Input.GetKey(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
+        if ((Input.GetKeyDown(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
         {
             if (playerAction != PLAYER_ACTION.KNOCK)
-            {
+            {             
                 playerAction = PLAYER_ACTION.KNOCK;
-                canThrowRock = false;
-                canTakeDown = false;
-                canWalk = false;
-                canRun = false;
                 canCrouch = false;
                 canMove = false;
                 //TURN THESE BACK ON AFTER THE ANIM
