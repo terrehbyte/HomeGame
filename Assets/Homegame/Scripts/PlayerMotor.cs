@@ -44,6 +44,7 @@ public class PlayerMotor : MonoBehaviour
     public float sidleAlignmentDegreesPerSecond = 90.0f;
     bool sidleAligned = false;
     Vector3 sidleSurfaceNormal;
+    float sidleValidQueryLength = 1.0f;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -70,7 +71,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Walk(Vector3 walkDir)
     {
-        Debug.Log("WALKING");
         Vector3 input = ControllerToWorldDirection(walkDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -82,7 +82,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Run(Vector3 runDir)
     {
-        Debug.Log("RUNNING");
         Vector3 input = ControllerToWorldDirection(runDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -106,18 +105,35 @@ public class PlayerMotor : MonoBehaviour
             sidleSurfaceNormal = wallForward;
             transform.forward = Vector3.RotateTowards(transform.forward, wallForward, Mathf.Deg2Rad * (sidleAlignmentDegreesPerSecond * Time.deltaTime), 0.0f);
 
-            return;
+            input = Vector3.zero;
         }
 
         Vector3 worldWishDir = Quaternion.Euler(0, Quaternion.LookRotation(-wallForward, Vector3.up).eulerAngles.y, 0) * input;
         velocity = MoveGround(worldWishDir, velocity, groundSidleAcceleration, groundSidleMaxSpeed);
-        Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
-        charController.Move(delta);
+        Vector3 nextPosition = transform.position + velocity * Time.deltaTime;
+        Vector3 delta = nextPosition - transform.position;
+
+        var continuousSidleCandidates = Physics.RaycastAll(transform.position, (nextPosition - sidleSurfaceNormal).normalized, sidleValidQueryLength,
+                                                           manager.enviromentLayerMask, QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(transform.position, (nextPosition - sidleSurfaceNormal).normalized * sidleValidQueryLength, Color.yellow);
+
+        bool canMove = false;
+        foreach(var candidate in continuousSidleCandidates)
+        {
+            if(candidate.collider != manager.sidleWallCollider) { continue; }
+            canMove = true;
+            break;
+        }
+
+        if(canMove)
+        {
+            charController.Move(delta);
+        }
     }
 
     public void Idle(Vector3 idleDir)
     {
-        Debug.Log("IDLE");
     }
 
     public void StartCrouch()
@@ -213,8 +229,11 @@ public class PlayerMotor : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, Vector3.down * groundCheckLength);
 
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawRay(transform.position, sidleSurfaceNormal * 10.0f);
+        if(manager.playerState == PlayerManager.PLAYER_STATE.SIDLE)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawRay(transform.position, sidleSurfaceNormal * 10.0f);
+        }
     }
 
     void Reset()

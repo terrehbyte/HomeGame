@@ -42,8 +42,6 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public bool canCrouch = true;
     [ReadOnlyField]
-    public bool canSidle = false;
-    [ReadOnlyField]
     public bool canKnock = false;
     [ReadOnlyField]
     public bool canThrowRock = false;
@@ -51,7 +49,8 @@ public class PlayerManager : MonoBehaviour
     public bool canTakeDown = false;
 
     //For sidle detection
-    private Vector3 sidleWallNormal;
+    public Vector3 sidleWallNormal {get; private set;}
+    public Collider sidleWallCollider {get; private set;}
 
     //For Enemy Detection
     private int numEnemiesNearPlayer;
@@ -188,7 +187,6 @@ public class PlayerManager : MonoBehaviour
 
         void tempFunc()
         {
-            Debug.Log("exit sidle");
             canWalk = true;
             canRun = true;
             playerState = previousPlayerState;
@@ -272,7 +270,6 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-
         if (sidleCandidates.Length > 0)
         {
             if (autoSidle == true)
@@ -286,6 +283,7 @@ public class PlayerManager : MonoBehaviour
                     canRun = false;
 
                     sidleWallNormal = sidleCandidates[0].normal;
+                    sidleWallCollider = sidleCandidates[0].collider;
                 }
             }
         }
