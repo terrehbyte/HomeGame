@@ -256,6 +256,19 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+<<<<<<< HEAD:Assets/Scenes/ArtTesting.unity
+    - target: {fileID: 400000, guid: 0749eb7db975c8f458c4bf582692ca90, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 0749eb7db975c8f458c4bf582692ca90, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 0749eb7db975c8f458c4bf582692ca90, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+=======
     - target: {fileID: 6760977117615236047, guid: 6a82da587e1427741bb40771d1232241,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -270,6 +283,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+>>>>>>> 0541e7d5052ad89f409085db1ddc9802f5f93045:Assets/Homegame/Scenes/ArtTesting.unity
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a82da587e1427741bb40771d1232241, type: 3}

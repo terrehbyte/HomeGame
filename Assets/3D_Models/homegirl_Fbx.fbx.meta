@@ -19,6 +19,38 @@ ModelImporter:
     100026: Plane.008
     100028: Plane.009
     100030: Plane.012
+    100032: Base
+    100034: bicept.L
+    100036: bicept.R
+    100038: Body
+    100040: chest
+    100042: Foot.L
+    100044: Foot.L_end
+    100046: Foot.R
+    100048: Foot.R_end
+    100050: Forarm.L
+    100052: Forarm.R
+    100054: Hand.L
+    100056: Hand.L_end
+    100058: Hand.R
+    100060: Hand.R_end
+    100062: head
+    100064: head_end
+    100066: hip.L
+    100068: hip.R
+    100070: neck
+    100072: Shin.L.001
+    100074: Shin.R.001
+    100076: Shoulder.L
+    100078: Shoulder.R
+    100080: thigh.L.001
+    100082: thigh.R.001
+    100084: tummy
+    100086: Arm_Band
+    100088: Armature
+    100090: Empty
+    100092: Foot IK temp
+    100094: homegirl
     400000: //RootNode
     400002: homegirl_pre_mirror.000
     400004: homegirl_pre_mirror.001
@@ -35,6 +67,38 @@ ModelImporter:
     400026: Plane.008
     400028: Plane.009
     400030: Plane.012
+    400032: Base
+    400034: bicept.L
+    400036: bicept.R
+    400038: Body
+    400040: chest
+    400042: Foot.L
+    400044: Foot.L_end
+    400046: Foot.R
+    400048: Foot.R_end
+    400050: Forarm.L
+    400052: Forarm.R
+    400054: Hand.L
+    400056: Hand.L_end
+    400058: Hand.R
+    400060: Hand.R_end
+    400062: head
+    400064: head_end
+    400066: hip.L
+    400068: hip.R
+    400070: neck
+    400072: Shin.L.001
+    400074: Shin.R.001
+    400076: Shoulder.L
+    400078: Shoulder.R
+    400080: thigh.L.001
+    400082: thigh.R.001
+    400084: tummy
+    400086: Arm_Band
+    400088: Armature
+    400090: Empty
+    400092: Foot IK temp
+    400094: homegirl
     2100000: Material
     2100002: No Name
     2300000: homegirl_pre_mirror.000
@@ -52,6 +116,7 @@ ModelImporter:
     2300024: Plane.008
     2300026: Plane.009
     2300028: Plane.012
+    2300030: Arm_Band
     3300000: homegirl_pre_mirror.000
     3300002: homegirl_pre_mirror.001
     3300004: homegirl_pre_mirror.002
@@ -67,6 +132,7 @@ ModelImporter:
     3300024: Plane.008
     3300026: Plane.009
     3300028: Plane.012
+    3300030: Arm_Band
     4300000: homegirl_pre_mirror.004
     4300002: homegirl_pre_mirror.002
     4300004: Plane.012
@@ -82,6 +148,45 @@ ModelImporter:
     4300024: homegirl_pre_mirror.000
     4300026: Plane
     4300028: homegirl_pre_mirror.001
+    4300030: Arm_Band
+    4300032: homegirl
+    7400000: ArmsDown
+    7400002: Idle
+    7400004: Armature|ArmsDown
+    7400006: Armature|Idle
+    7400008: Armature|Tpose
+    7400010: Run
+    7400012: Walk.001
+    7400014: Sidle_Crouch
+    7400016: Sidle_Stand
+    7400018: Wall_Idle
+    7400020: Knock
+    7400022: takedown
+    7400024: Armature|Action
+    7400026: Armature|Action.001
+    7400028: Armature|Arm_Band_Smash
+    7400030: Armature|Crouch
+    7400032: Armature|Knock
+    7400034: 'Armature|opening stand up real '
+    7400036: Armature|Run
+    7400038: Armature|Run 2
+    7400040: Armature|Sidle_Crouch
+    7400042: Armature|Sidle_Stand
+    7400044: Armature|takedown
+    7400046: Armature|Walk
+    7400048: Armature|Wall_Idle
+    7400050: homegirl_pre_mirror.001|Action
+    7400052: homegirl_pre_mirror.001|Action.001
+    7400054: homegirl_pre_mirror.001|Arm_Band_Smash
+    7400056: homegirl_pre_mirror.001|Sidle_Stand
+    7400058: homegirl|Action
+    7400060: homegirl|Action.001
+    7400062: homegirl|Arm_Band_Smash
+    7400064: homegirl|Sidle_Stand
+    9500000: //RootNode
+    13700000: homegirl_pre_mirror.001
+    13700002: homegirl
+    2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -102,7 +207,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -116,6 +221,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -133,13 +239,16 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
@@ -155,10 +264,10 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
