@@ -6,6 +6,9 @@ public class PlayerManager : MonoBehaviour
 {
     public PlayerMotor playerMotor;
     public InputManager inputManager;
+    public Animator animator;
+
+    public bool showTriggers;
 
     public PLAYER_STATE playerState;
     public PLAYER_ACTION playerAction;
