@@ -1,29 +1,15 @@
 fileFormatVersion: 2
-guid: b432837da1f0d5e44b57feee93627faa
+guid: 61f2f8823bc1dff42936e307a078c72a
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
-    100002: PrisonPodDoor
-    100004: Robot_003
-    100006: Prison_Pod
     400000: //RootNode
-    400002: PrisonPodDoor
-    400004: Robot_003
-    400006: Prison_Pod
-    2100000: Material_001
-    2100002: Material_002
-    2300000: PrisonPodDoor
-    2300002: Robot_003
-    2300004: Prison_Pod
-    3300000: PrisonPodDoor
-    3300002: Robot_003
-    3300004: Prison_Pod
-    4300000: Robot_003
-    4300002: PrisonPodDoor
-    4300004: Prison_Pod
-    7400000: Default Take
-    9500000: //RootNode
+    2100000: Material
+    2100002: Material.002
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Arm_Band
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -77,7 +63,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
     previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -104,7 +90,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
