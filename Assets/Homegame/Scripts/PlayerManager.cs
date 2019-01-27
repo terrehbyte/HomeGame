@@ -11,6 +11,8 @@ public class PlayerManager : MonoBehaviour
     public ARMBAND_STATE armbandState;
     public bool isCrouching;
 
+    [Range(0.0f,1.0f)]
+    public float runLimit;
 
     [ReadOnlyField]
     public PlayerMotor playerMotor;
@@ -51,16 +53,15 @@ public class PlayerManager : MonoBehaviour
 
     [Header("Sidle Shit")]
     public float sidleAngleThreshold = 15.0f;
-    public float runLimit;
     public float sidleProximity = 1.0f;
     public bool autoSidle;
     public LayerMask enviromentLayerMask;
     public float triggerCapsuleRadiusOffset;
     public LayerMask enemyLayerMask;
     //For sidle detection
-    public Vector3 sidleWallNormal {get; private set;}
-    public Collider sidleWallCollider {get; private set;}
-    public Vector3 sidleWallEntryPoint {get; private set;}
+    public Vector3 sidleWallNormal { get; private set; }
+    public Collider sidleWallCollider { get; private set; }
+    public Vector3 sidleWallEntryPoint { get; private set; }
 
     [Header("Takedown Shit")]
     //For Enemy Detection
@@ -82,7 +83,7 @@ public class PlayerManager : MonoBehaviour
 
     //GAMEPAD SHIT
 
-    
+
 
     public enum PLAYER_STATE
     {
@@ -230,6 +231,8 @@ public class PlayerManager : MonoBehaviour
 
         void StopSidle()
         {
+            canMove = true;
+
             canWalk = true;
             canRun = true;
             playerState = previousPlayerState;
@@ -241,12 +244,14 @@ public class PlayerManager : MonoBehaviour
             canWalk = true;
             canRun = true;
             canCrouch = true;
+            canMove = true;
             playerAction = PLAYER_ACTION.NOACTION;
         }
 
         void StopKnock()
         {
             playerAction = PLAYER_ACTION.NOACTION;
+            canMove = true;
             canWalk = true;
             canRun = true;
             canCrouch = true;
@@ -288,7 +293,7 @@ public class PlayerManager : MonoBehaviour
                 playerState = PLAYER_STATE.WALK;
             }
 
-            if ( (Input.GetKey(KeyCode.LeftShift) || inputManager.input.magnitude >= runLimit) && canRun == true)
+            if ((Input.GetKey(KeyCode.LeftShift) || inputManager.input.magnitude >= runLimit) && canRun == true)
             {
                 if (playerState != PLAYER_STATE.RUN)
                 {
@@ -314,7 +319,7 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        if ( (Input.GetKey(KeyCode.C) || inputManager.gamepadA) && canCrouch == true)
+        if ((Input.GetKey(KeyCode.C) || inputManager.gamepadA) && canCrouch == true)
         {
             if (isCrouching == false)
             {
@@ -330,7 +335,7 @@ public class PlayerManager : MonoBehaviour
             {
                 canKnock = true;
                 canRun = true;
-                
+
                 isCrouching = false;
             }
         }
@@ -372,18 +377,19 @@ public class PlayerManager : MonoBehaviour
             canTakeDown = true;
         }
 
-        if ( (Input.GetKey(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
+        if ((Input.GetKey(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
         {
             canKnock = false;
             canThrowRock = false;
             canWalk = false;
             canRun = false;
             canCrouch = false;
+            canMove = false;
             playerAction = PLAYER_ACTION.TAKEDOWN;
         }
 
         //J for knock 
-        if ( (Input.GetKey(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
+        if ((Input.GetKey(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
         {
             if (playerAction != PLAYER_ACTION.KNOCK)
             {
@@ -393,24 +399,24 @@ public class PlayerManager : MonoBehaviour
                 canWalk = false;
                 canRun = false;
                 canCrouch = false;
+                canMove = false;
                 //TURN THESE BACK ON AFTER THE ANIM
             }
         }
-        
-        //K for throwing a rock
-        if ( (Input.GetKey(KeyCode.K) || inputManager.gamepadY) && canThrowRock == true)
-        {
-            if (playerAction != PLAYER_ACTION.THROWROCK)
-            {
-                playerAction = PLAYER_ACTION.THROWROCK;
-                canWalk = false;
-                canRun = false;
 
-                canThrowRock = false;
-                canTakeDown = false;
-                //TURN THESE ON AFTER THE ANIM
-            }
-        }
+        ////K for throwing a rock
+        //if ((Input.GetKey(KeyCode.K) || inputManager.gamepadY) && canThrowRock == true)
+        //{
+        //    if (playerAction != PLAYER_ACTION.THROWROCK)
+        //    {
+        //        playerAction = PLAYER_ACTION.THROWROCK;
+        //        canWalk = false;
+        //        canRun = false;
+        //        canThrowRock = false;
+        //        canTakeDown = false;
+        //        canMove = false;
+        //    }
+        //}
     }
 
     private void UpdatePlayerArmband()

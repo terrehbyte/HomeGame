@@ -65,6 +65,11 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public Vector3 groundNorm;
     private float DELETEME;
 
+
+     private bool wakeUpAnimationFinished = false;
+     private bool takedownAnimationFinished = false;
+     private bool knockAnimationFinished = false;
+
     private void Awake()
     {
         playerCamera = Camera.main;
@@ -197,29 +202,30 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
 
         animator.SetTrigger("Takedown");
-        //LEGIT JUST TO SIMULATE TAKING DOWN
-        DELETEME += Time.deltaTime;
-        if (DELETEME >= 2/3)
+        if (takedownAnimationFinished == true)
         {
             GameObject.Destroy(enemy);
-            exitCallback();
+            takedownAnimationFinished = false;
+            exitCallback.Invoke();
         }
 
     }
 
     public void doKnock(System.Action exitCallback)
     {
-        //DO SHIT
         animator.SetTrigger("Knocked");
-        exitCallback();
+        if (knockAnimationFinished == true)
+        {
+            knockAnimationFinished = false;
+            exitCallback.Invoke();
+        }
     }
 
     public void doWakeUp(System.Action exitCallback)
-    {
-        //DO SHIT
-        if(/* Animation is done*/ true)
+    {   
+        if(wakeUpAnimationFinished ==  true)
         {
-            exitCallback();
+            exitCallback.Invoke();
         }
     }
 
@@ -321,6 +327,20 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     public void OnStateChanged(AnimatorEventInfo eventInfo)
     {
+        if (eventInfo.message == "KnockEnd")
+        {
+            knockAnimationFinished = true;
+        }
+
+        if (eventInfo.message == "TakedownExit")
+        {
+            takedownAnimationFinished = true;
+        }
+
+        if (eventInfo.message == "OpeningExit")
+        {
+            wakeUpAnimationFinished = true;
+        }
 
     }
 }
