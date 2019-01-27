@@ -9,8 +9,18 @@ public class ConeVision : MonoBehaviour
 
     [SerializeField]UnityEvent Thing;
 
-   [SerializeField] Image indicator;
+
+
+   [SerializeField] Material indicator;
    Vector3 lastPosition;
+
+    private void Start()
+    {
+        if (indicator != null)
+        {
+            indicator = GetComponent<Renderer>().material;
+        }
+    }
 
 
     private void OnTriggerEnter(Collider other)
@@ -19,7 +29,10 @@ public class ConeVision : MonoBehaviour
         {
             lastPosition = other.transform.position;
             Thing.Invoke();
-            indicator.color = Color.red;
+            if (indicator != null)
+            {
+                indicator.color = Color.red;
+            }
         }
     }
 

@@ -14,7 +14,7 @@ public class AdvancedSplineWalker : SplineWalker
     }
 
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (isFollowingSpline)
         {
@@ -40,7 +40,7 @@ public class AdvancedSplineWalker : SplineWalker
             }
             else
             {
-                progress -= Time.deltaTime / duration;
+                progress -= Time.fixedDeltaTime / duration;
                 if (progress < 0f)
                 {
                     progress = -progress;
@@ -64,7 +64,7 @@ public class AdvancedSplineWalker : SplineWalker
             if (lookForward)
             {
 
-                transform.LookAt( spline.GetDirection(progress));
+                transform.LookAt(transform.forward + spline.GetDirection(progress));
             }
         }
     }

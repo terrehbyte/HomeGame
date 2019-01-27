@@ -9,10 +9,10 @@ public class BezierSpline : MonoBehaviour {
 	public Vector3[] points;
 
 	[SerializeField]
-	private BezierControlPointMode[] modes;
+	public BezierControlPointMode[] modes;
 
 	[SerializeField]
-	private bool loop;
+	public bool loop;
 
     void OnDrawGizmos()
     {
@@ -20,9 +20,7 @@ public class BezierSpline : MonoBehaviour {
         Gizmos.color = Color.yellow;
         Gizmos.DrawIcon(transform.position +new Vector3(0f,.05f,0f), ("Bezier/DroneIcon"));
     }
-
-
-
+    
     public bool Loop {
 		get { 
 			return loop;
@@ -153,9 +151,11 @@ public class BezierSpline : MonoBehaviour {
 
 	}
 
-    //
+    //we are passing progress along the spline
 	public Vector3 GetPoint (float t) {
-		int i;
+
+        int i;
+
 		if (t >= 1f) {
 			t = 1f;
 			i = points.Length - 4;
@@ -172,32 +172,43 @@ public class BezierSpline : MonoBehaviour {
         }
         catch (Exception)
         {
-            Debug.Log("index out of array length, exception covered");
+
+            return transform.TransformPoint(Bezier.GetPoint(points[i], points[i + 1], points[i + 2], t));
+            Debug.Log("index: " + i +" out of array length, exception covered");
             return transform.position;
             throw;
         }
 
 	}
 
+
+    //needed to add to flightpath, pass progress
     public int GetNextPoint(float t)
     {
-        int i;
-        if (t >= 1f)
-        {
-            t = 1f;
-            i = points.Length - 4;
-        }
-        else
-        {
-            t = Mathf.Clamp01(t) * CurveCount;
-            i = (int)t;
-            t -= i;
-            i *= 3;
-        }
+
+        int i = GetLastPoint(t);
+        i++;
+
+        Debug.Log(i);
+
         return i;
     }
-        
-   
+
+    //needed to add to flightpath, pass progress
+    public int GetLastPoint(float t)
+    {
+
+        float d = 1f / points.Length;
+
+        int i = (int)(t / d);
+        return i;
+    }
+
+    public float GetIndexProgress(int index)
+    {
+        int p = index/points.Length;
+        return p;
+    }
 
 
 
@@ -221,6 +232,8 @@ public class BezierSpline : MonoBehaviour {
         }
         catch (Exception)
         {
+        
+            return transform.TransformPoint(Bezier.GetFirstDerivitive(points[i], points[i + 1], points[i + 2], t)) - transform.position;
             Debug.Log("index out of array length, exception covered");
             return transform.position;
             throw;

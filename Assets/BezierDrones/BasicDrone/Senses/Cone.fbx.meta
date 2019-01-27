@@ -11,7 +11,12 @@ ModelImporter:
     3300000: //RootNode
     4300000: Cone
     6400000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ConeMat
+    second: {fileID: 2100000, guid: 9acdb2e7e1035a14da60f06abf5881bd, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

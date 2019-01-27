@@ -21,6 +21,12 @@ public class AudioLord : MonoBehaviour
 
     public GameObject playerObject;
 
+    public PlayerManager playerManager;
+
+    public float transitionTime;
+    private int songPlaying;
+    private float time;
+    private bool isSwapping;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +37,8 @@ public class AudioLord : MonoBehaviour
         ActionSource1 = playerObject.AddComponent<AudioSource>();
         ActionSource2 = playerObject.AddComponent<AudioSource>();
         ActionSource3 = playerObject.AddComponent<AudioSource>();
+
+
 
         musicSource1.clip = musicClip1;
         musicSource1.loop = true;
@@ -44,20 +52,77 @@ public class AudioLord : MonoBehaviour
     void Update()
     {
 
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            SwapSong();
+        }
+
+
+        if (isSwapping)
+        {
+            if (songPlaying == 1)
+            {
+                musicSource1.volume -= 1 / transitionTime * Time.deltaTime;
+                musicSource2.volume += 1 / transitionTime * Time.deltaTime;
+
+                if (musicSource1.volume <= 0.0f)
+                {
+                    isSwapping = false;
+                    musicSource1.Pause();
+                }
+            }
+            else
+            {
+                musicSource2.volume -= 1 / transitionTime * Time.deltaTime;
+                musicSource1.volume += 1 / transitionTime * Time.deltaTime;
+
+                if (musicSource1.volume <= 0.0f)
+                {
+                    isSwapping = false;
+                    musicSource2.Pause();
+                }
+            }
+        }
+
+
     }
 
-    public void fadeOutIn(AudioSource fadeOutSource, AudioSource fadeInSource) {
-        if (fadeInSource.isPlaying == false) {
-            fadeInSource.Play();
-        }
-        fadeOutSource.volume -= 0.2f;
-        fadeInSource.volume =+ 0.2f;
+    public void SwapSong()
+    {
+        time = 0.0f;
+        isSwapping = true;
 
-        if (fadeOutSource.volume <= 0f) {
-            fadeOutSource.Stop();
+        if (musicSource1.isPlaying)
+        {
+            songPlaying = 1;
+
+            musicSource2.volume = 0.0f;
+            musicSource2.Play();
         }
-        if (fadeInSource.volume >= 1f) { 
-        
+        else
+        {
+            songPlaying = 2;
+
+            musicSource1.volume = 0.0f;
+            musicSource1.Play();
         }
     }
+
+    public void BlinkCaller()
+    {
+        ActionSource1.PlayOneShot(wristBandClip);
+
+    }
+
+    public void FootCaller()
+    {
+        if (playerManager.playerState != PlayerManager.PLAYER_STATE.SIDLE || playerManager.isCrouching == false)
+        {
+
+        }
+        footSource.PlayOneShot(footclip[Random.Range(0, 6)]);
+    }
+
+
+
 }
