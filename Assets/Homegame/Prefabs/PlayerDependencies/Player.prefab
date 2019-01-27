@@ -973,9 +973,9 @@ GameObject:
   - component: {fileID: 3815216123334604266}
   - component: {fileID: 3815216123334604267}
   - component: {fileID: 3815216123334604264}
+  - component: {fileID: 3085114730104188166}
   - component: {fileID: 3815216123334604265}
   - component: {fileID: 9174946611889630863}
-  - component: {fileID: 3085114730104188166}
   - component: {fileID: 3653261897845677295}
   m_Layer: 0
   m_Name: Player
@@ -1077,6 +1077,23 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3085114730104188166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3815216123334604246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ca58e09bda230c439facc2cca5f784e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {x: 0, y: 0, z: 0}
+  gamepadA: 0
+  gamepadB: 0
+  gamepadX: 0
+  gamepadY: 0
 --- !u!114 &3815216123334604265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1116,6 +1133,7 @@ MonoBehaviour:
   sidleCameraDistance: 2
   sidleEdgeLimit: 0.5
   sidleExitZThreshold: -0.3
+  sidleCameraTargetOffset: 4
   grounded: 0
   groundCheckLength: 1.5
   groundCheckLayer:
@@ -1140,7 +1158,8 @@ MonoBehaviour:
   playerAction: 0
   armbandState: 0
   isCrouching: 0
-  playerMotor: {fileID: 3815216123334604265}
+  runLimit: 0.8
+  playerMotor: {fileID: 0}
   inputManager: {fileID: 0}
   zone1Radius: 10
   zone2Radius: 15
@@ -1159,7 +1178,6 @@ MonoBehaviour:
   canThrowRock: 0
   canTakeDown: 0
   sidleAngleThreshold: 0.6
-  runLimit: 0.8
   sidleProximity: 1
   autoSidle: 1
   enviromentLayerMask:
@@ -1171,23 +1189,6 @@ MonoBehaviour:
     m_Bits: 4096
   selfCapsuleCollider: {fileID: 0}
   previousPlayerState: 0
---- !u!114 &3085114730104188166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3815216123334604246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ca58e09bda230c439facc2cca5f784e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  input: {x: 0, y: 0, z: 0}
-  gamepadA: 0
-  gamepadB: 0
-  gamepadX: 0
-  gamepadY: 0
 --- !u!114 &3653261897845677295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1211,6 +1212,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 61f2f8823bc1dff42936e307a078c72a, type: 3}
       propertyPath: m_Name
       value: Armband_MATERIAL_SLOTS
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 61f2f8823bc1dff42936e307a078c72a, type: 3}
+      propertyPath: m_TagString
+      value: Armband
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 61f2f8823bc1dff42936e307a078c72a, type: 3}
       propertyPath: m_LocalPosition.x

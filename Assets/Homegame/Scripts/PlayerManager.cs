@@ -14,10 +14,10 @@ public class PlayerManager : MonoBehaviour
     [Range(0.0f,1.0f)]
     public float runLimit;
 
-    [ReadOnlyField]
-    public PlayerMotor playerMotor;
-    [ReadOnlyField]
-    public InputManager inputManager;
+    [SerializeField]
+    private PlayerMotor playerMotor;
+    [SerializeField]
+    private InputManager inputManager;
 
     [Header("ARMBAND SHIT")]
 
@@ -114,13 +114,20 @@ public class PlayerManager : MonoBehaviour
         canMove = false;
 
         selfCapsuleCollider = this.GetComponent<CapsuleCollider>();
-        playerMotor = this.GetComponent<PlayerMotor>();
         armbandMeshRenderer = GameObject.FindGameObjectWithTag("Armband").GetComponent<MeshRenderer>();
-        inputManager = gameObject.GetComponent<InputManager>();
+        playerMotor = this.GetComponent<PlayerMotor>();
+        inputManager = this.GetComponent<InputManager>();
     }
 
     void Update()
     {
+        if (playerMotor == null)
+        {
+            Debug.Log("reeeeee");
+            playerMotor = this.GetComponent<PlayerMotor>();
+            inputManager = this.GetComponent<InputManager>();
+        }
+
         blinkTime += Time.deltaTime;
         blinkTime2 += Time.deltaTime;
 
@@ -193,11 +200,11 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.material = armbandMatActive;
+                    armbandMeshRenderer.materials[1]     = armbandMatActive;
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.material = armbandMatInactive;
+                    armbandMeshRenderer.materials[1] = armbandMatInactive;
                 }
                 break;
             case ARMBAND_STATE.SEMIDANGER:
@@ -205,11 +212,11 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.material = armbandMatActive;
+                    armbandMeshRenderer.materials[1] = armbandMatActive;
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.material = armbandMatInactive;
+                    armbandMeshRenderer.materials[1] = armbandMatInactive;
                 }
                 break;
             case ARMBAND_STATE.DANGER:
@@ -217,15 +224,15 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.material = armbandMatActive;
+                    armbandMeshRenderer.materials[1] = armbandMatActive;
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.material = armbandMatInactive;
+                    armbandMeshRenderer.materials[1] = armbandMatInactive;
                 }
                 break;
             case ARMBAND_STATE.ATTACK:
-                armbandMeshRenderer.material = armbandMatAttack;
+                armbandMeshRenderer.materials[1] = armbandMatAttack;
                 break;
         }
 
