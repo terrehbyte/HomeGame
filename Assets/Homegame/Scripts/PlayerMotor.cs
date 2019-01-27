@@ -44,6 +44,7 @@ public class PlayerMotor : MonoBehaviour
     public float sidleAlignmentDegreesPerSecond = 90.0f;
     bool sidleAligned = false;
     Vector3 sidleSurfaceNormal;
+    float sidleValidQueryLength = 1.0f;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -109,8 +110,26 @@ public class PlayerMotor : MonoBehaviour
 
         Vector3 worldWishDir = Quaternion.Euler(0, Quaternion.LookRotation(-wallForward, Vector3.up).eulerAngles.y, 0) * input;
         velocity = MoveGround(worldWishDir, velocity, groundSidleAcceleration, groundSidleMaxSpeed);
-        Vector3 delta = transform.position + velocity * Time.deltaTime - transform.position;
-        charController.Move(delta);
+        Vector3 nextPosition = transform.position + velocity * Time.deltaTime;
+        Vector3 delta = nextPosition - transform.position;
+
+        var continuousSidleCandidates = Physics.RaycastAll(transform.position, (nextPosition - sidleSurfaceNormal).normalized, sidleValidQueryLength,
+                                                           manager.enviromentLayerMask, QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(transform.position, (nextPosition - sidleSurfaceNormal).normalized * sidleValidQueryLength, Color.yellow);
+
+        bool canMove = false;
+        foreach(var candidate in continuousSidleCandidates)
+        {
+            if(candidate.collider != manager.sidleWallCollider) { continue; }
+            canMove = true;
+            break;
+        }
+
+        if(canMove)
+        {
+            charController.Move(delta);
+        }
     }
 
     public void Idle(Vector3 idleDir)

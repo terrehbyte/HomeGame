@@ -49,7 +49,8 @@ public class PlayerManager : MonoBehaviour
     public bool canTakeDown = false;
 
     //For sidle detection
-    private Vector3 sidleWallNormal;
+    public Vector3 sidleWallNormal {get; private set;}
+    public Collider sidleWallCollider {get; private set;}
 
     //For Enemy Detection
     private int numEnemiesNearPlayer;
@@ -282,6 +283,7 @@ public class PlayerManager : MonoBehaviour
                     canRun = false;
 
                     sidleWallNormal = sidleCandidates[0].normal;
+                    sidleWallCollider = sidleCandidates[0].collider;
                 }
             }
         }
