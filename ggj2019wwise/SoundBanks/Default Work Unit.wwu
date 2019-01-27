@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{FB079C6D-ADE8-496F-A360-89E8A1F39D80}" SchemaVersion="89">
 	<SoundBanks>
-		<WorkUnit Name="Default Work Unit" ID="{FB079C6D-ADE8-496F-A360-89E8A1F39D80}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{FB079C6D-ADE8-496F-A360-89E8A1F39D80}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="gameBank" ID="{29FFB026-96CC-41F3-A271-DE4E66BAC7C9}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_wrist" ID="{2B2A08BE-7720-4903-8321-F7C1F14675E5}" WorkUnitID="{680BCC66-DC1D-4FCA-8840-250D52A7BEDF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_gameOver" ID="{A37F473D-D693-4978-BAFA-5E368066FFAF}" WorkUnitID="{680BCC66-DC1D-4FCA-8840-250D52A7BEDF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_footstep" ID="{F55FBC9D-7A89-4A2E-B1BC-C4F41D8E2452}" WorkUnitID="{680BCC66-DC1D-4FCA-8840-250D52A7BEDF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_drone" ID="{BA6C0B52-14BB-4CB9-B944-FE6F588953A1}" WorkUnitID="{680BCC66-DC1D-4FCA-8840-250D52A7BEDF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_music" ID="{EB9D11EA-F1EB-4E24-8038-1DF53907140A}" WorkUnitID="{680BCC66-DC1D-4FCA-8840-250D52A7BEDF}" Filter="7" Origin="Manual"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
 	</SoundBanks>
 </WwiseDocument>

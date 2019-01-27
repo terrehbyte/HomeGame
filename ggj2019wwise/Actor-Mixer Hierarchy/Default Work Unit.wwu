@@ -164,6 +164,88 @@
 						</Sound>
 					</ChildrenList>
 				</RandomSequenceContainer>
+				<Sound Name="drone" ID="{A51DCFAE-2EB2-4800-A47F-00063A1B2EB6}" ShortID="489912340">
+					<PropertyList>
+						<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+						<Property Name="Pitch" Type="int32">
+							<RTPCList>
+								<RTPC Name="" ID="{88AC1F72-D3E8-48B8-AD94-ED04FD7D50F7}" ShortID="710645907">
+									<ReferenceList/>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Attenuation">
+							<ObjectRef Name="droneAtten" ID="{A09873C2-A889-4169-A582-1ED6F34AAD99}" WorkUnitID="{53FD272B-66A6-45CC-B5CD-73509654DED6}"/>
+						</Reference>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59AE36ED-481B-4D2B-B94A-700640393DBB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{49257320-795C-4678-A627-B0622585EAED}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="drone" ID="{688AE137-FEFD-4813-A370-E3B07AE88FE6}" ShortID="354228773">
+							<PropertyList>
+								<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+								<Property Name="TrimBegin" Type="Real64" Value="0.109819793454991"/>
+								<Property Name="TrimEnd" Type="Real64" Value="14.2348012542648"/>
+							</PropertyList>
+							<Language>SFX</Language>
+							<AudioFile>drone.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="drone" ID="{688AE137-FEFD-4813-A370-E3B07AE88FE6}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="eventImpact" ID="{BD4FB3F5-1922-4AD8-8E6B-11BE885EDD9E}" ShortID="253734078">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59AE36ED-481B-4D2B-B94A-700640393DBB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{49257320-795C-4678-A627-B0622585EAED}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="eventImpact" ID="{EF84415D-6755-49A4-A394-400A4C67ED37}" ShortID="252134066">
+							<Language>SFX</Language>
+							<AudioFile>eventImpact.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="eventImpact" ID="{EF84415D-6755-49A4-A394-400A4C67ED37}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="wristBand" ID="{DE2BD4E3-6E48-4A97-8B88-17F574ECB31F}" ShortID="945133789">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>8</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59AE36ED-481B-4D2B-B94A-700640393DBB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{49257320-795C-4678-A627-B0622585EAED}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="wristBand" ID="{554D59F4-87B0-4FCB-9330-F6FC5B456971}" ShortID="402558668">
+							<Language>SFX</Language>
+							<AudioFile>wristBand.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="wristBand" ID="{554D59F4-87B0-4FCB-9330-F6FC5B456971}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>

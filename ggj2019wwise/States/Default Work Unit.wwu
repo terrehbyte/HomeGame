@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{02BBC1ED-D908-4F35-8605-6325309612DF}" SchemaVersion="89">
 	<States>
-		<WorkUnit Name="Default Work Unit" ID="{02BBC1ED-D908-4F35-8605-6325309612DF}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{02BBC1ED-D908-4F35-8605-6325309612DF}" PersistMode="Standalone">
+			<ChildrenList>
+				<StateGroup Name="attackState" ID="{13F6693D-1719-429B-AC1A-508D59A808B7}">
+					<ChildrenList>
+						<State Name="None" ID="{0A629312-A72C-4E9F-B6A2-6E0ACAF572F1}"/>
+						<State Name="Patrol" ID="{6BC12DFE-ECE9-49BD-B9C1-DE45D7A2C42C}"/>
+						<State Name="Attack" ID="{53046BAA-CF2D-4F1B-8123-8A3C9A26C5E8}"/>
+					</ChildrenList>
+				</StateGroup>
+			</ChildrenList>
+		</WorkUnit>
 	</States>
 </WwiseDocument>

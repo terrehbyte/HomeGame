@@ -28,20 +28,98 @@ MonoBehaviour:
   - PhysicalPath: SoundBanks\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: 6d9c07fbe8ad6f49a36089e8a1f39d80
-    m_lastTime: -8586530753668078506
-    List: []
+    m_lastTime: -8586530489461560685
+    List:
+    - name: gameBank
+      guid: 26b0ff29cc96f341a271de4e66bac7c9
+      id: 3410529917
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: gameBank
+        ObjectType: 7
+      Path: Default Work Unit\gameBank
   EventWwu:
   - PhysicalPath: Events\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: 66cc0b681ddcca4f8840250d52a7bedf
-    m_lastTime: -8586530753668473956
-    List: []
+    m_lastTime: -8586530489461433446
+    List:
+    - name: Play_drone
+      guid: 520b6cbabb14b94cb944fe6f588953a1
+      id: 4042141136
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Play_drone
+        ObjectType: 3
+      Path: Default Work Unit\Play_drone
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+    - name: Play_footstep
+      guid: 9dbc5ff5897a2e4ab1bcc4f41d8e2452
+      id: 1602358412
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Play_footstep
+        ObjectType: 3
+      Path: Default Work Unit\Play_footstep
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+    - name: Play_gameOver
+      guid: 3d477fa393d67849bafa5e368066ffaf
+      id: 3174629258
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Play_gameOver
+        ObjectType: 3
+      Path: Default Work Unit\Play_gameOver
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+    - name: Play_music
+      guid: ea119debebf1244e80381df53907140a
+      id: 2932040671
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Play_music
+        ObjectType: 3
+      Path: Default Work Unit\Play_music
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+    - name: Play_wrist
+      guid: be082a2b207703498321f7c1f14675e5
+      id: 41954707
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Play_wrist
+        ObjectType: 3
+      Path: Default Work Unit\Play_wrist
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
   RtpcWwu:
   - PhysicalPath: Game Parameters\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: 4b3245eaaa0bf242a6236aa2d26a7082
-    m_lastTime: -8586530753668376421
-    List: []
+    m_lastTime: -8586530569459757231
+    List:
+    - name: musicParam
+      guid: fa8512007ba4404ab358e0712c74c682
+      id: 3335592545
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: musicParam
+        ObjectType: 13
+      Path: Default Work Unit\musicParam
   - PhysicalPath: Game Parameters\Factory SoundSeed Air Game Syncs.wwu
     ParentPhysicalPath: 
     guid: 5577163b42fb8b4598bf96f557afb3b9
@@ -141,8 +219,36 @@ MonoBehaviour:
   - PhysicalPath: States\Default Work Unit.wwu
     ParentPhysicalPath: 
     guid: edc1bb0208d9354f86056325309612df
-    m_lastTime: -8586530753668177994
-    List: []
+    m_lastTime: -8586530517157236212
+    List:
+    - name: attackState
+      guid: 3d69f61319179b42ac1a508d59a808b7
+      id: 4265607304
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: attackState
+        ObjectType: 9
+      Path: Default Work Unit\attackState
+      values:
+      - name: Attack
+        guid: aa6b04532dcf1b4f81238a3c9a26c5e8
+        id: 180661997
+        PathAndIcons:
+        - ElementName: Attack
+          ObjectType: 8
+      - name: None
+        guid: 1293620a2ca79f4eb6a26e0acaf572f1
+        id: 748895195
+        PathAndIcons:
+        - ElementName: None
+          ObjectType: 8
+      - name: Patrol
+        guid: fe2dc16be9ecbd49b9c1de45d7a2c42c
+        id: 3497767639
+        PathAndIcons:
+        - ElementName: Patrol
+          ObjectType: 8
   SwitchWwu:
   - PhysicalPath: Switches\Default Work Unit.wwu
     ParentPhysicalPath: 
@@ -155,6 +261,9 @@ MonoBehaviour:
     guid: da20fc835fb8074c8890d5aba11c24a6
     m_lastTime: -8586530753668778216
     List: []
-  ExpandedItems: []
+  ExpandedItems:
+  - /ggj2019wwise
+  - /ggj2019wwise/Events
+  - /ggj2019wwise/Events/Default Work Unit
   autoPopulateEnabled: 1
   CurrentPluginConfig: 
