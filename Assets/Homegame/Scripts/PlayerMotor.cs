@@ -210,6 +210,16 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         exitCallback();
     }
 
+    public void doWakeUp(System.Action exitCallback)
+    {
+        //DO SHIT
+        if(/* Animation is done*/ true)
+        {
+            exitCallback();
+        }
+    }
+
+
     // Returns the player's new velocity when moving on the ground
     // accelDir: world-space direction to accelerate in
     // prevVelocity: world-space velocity

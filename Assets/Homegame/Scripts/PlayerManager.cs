@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    public PlayerMotor playerMotor;
-    public InputManager inputManager;
-
     public bool showTriggers;
 
     public PLAYER_STATE playerState;
@@ -14,31 +11,29 @@ public class PlayerManager : MonoBehaviour
     public ARMBAND_STATE armbandState;
     public bool isCrouching;
 
-    public float sidleAngleThreshold = 15.0f;
 
-    public float runLimit;
+    [ReadOnlyField]
+    public PlayerMotor playerMotor;
+    [ReadOnlyField]
+    public InputManager inputManager;
 
-    [Header("DANGER")]
+    [Header("ARMBAND SHIT")]
+
+    [Header("Danger Range")]
     public float zone1Radius;
-    [Header("Semi-Danger")]
+    [Header("Semi-Danger Range")]
     public float zone2Radius;
-
-    public Color BlinkColor1;
-    public Color BlinkColor2;
-
+    [Header("ADD MATERIALS")]
+    public Material armbandMatActive;
+    public Material armbandMatInactive;
+    public Material armbandMatAttack;
+    [Header("Blink Speeds")]
     public float slowBlinkSpeed;
     public float medBlinkSpeed;
     public float highBlinkSpeed;
     public float blinkSpeed;
 
-    public float sidleProximity = 1.0f;
-
-    public bool autoSidle;
-    public LayerMask enviromentLayerMask;
-    public float triggerCapsuleRadiusOffset;
-
-    public LayerMask enemyLayerMask;
-
+    [ReadOnlyField]
     public bool canMove = true;
     [ReadOnlyField]
     public bool canWalk = true;
@@ -53,19 +48,25 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public bool canTakeDown = false;
 
+
+    [Header("Sidle Shit")]
+    public float sidleAngleThreshold = 15.0f;
+    public float runLimit;
+    public float sidleProximity = 1.0f;
+    public bool autoSidle;
+    public LayerMask enviromentLayerMask;
+    public float triggerCapsuleRadiusOffset;
+    public LayerMask enemyLayerMask;
     //For sidle detection
     public Vector3 sidleWallNormal {get; private set;}
     public Collider sidleWallCollider {get; private set;}
     public Vector3 sidleWallEntryPoint {get; private set;}
 
+    [Header("Takedown Shit")]
     //For Enemy Detection
     private int numEnemiesNearPlayer;
     private Collider[] enemiesNearPlayer = new Collider[1];
-
     public CapsuleCollider selfCapsuleCollider;
-    public Renderer selfRenderer;
-
-
     //For Detecting Enemys Above
     private int numEnemiesAbovePlayer;
     private Collider[] enemiesAbovePlayer = new Collider[1];
@@ -74,14 +75,14 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public PLAYER_STATE previousPlayerState;
     private bool crouched = false;
-    private Material armbandMaterial;
+    private MeshRenderer armbandMeshRenderer;
     private float blinkTime;
     private float blinkTime2;
 
 
     //GAMEPAD SHIT
 
-
+    
 
     public enum PLAYER_STATE
     {
@@ -95,20 +96,25 @@ public class PlayerManager : MonoBehaviour
         NOACTION,
         KNOCK,
         THROWROCK,
-        TAKEDOWN
+        TAKEDOWN,
+        WAKINGUP
     }
     public enum ARMBAND_STATE
     {
         SAFE,
         SEMIDANGER,
-        DANGER
+        DANGER,
+        ATTACK
     }
 
     void Start()
     {
+        playerAction = PLAYER_ACTION.WAKINGUP;
+        canMove = false;
+
         selfCapsuleCollider = this.GetComponent<CapsuleCollider>();
-        selfRenderer = this.GetComponent<Renderer>();
-        armbandMaterial = GameObject.FindGameObjectWithTag("Armband").GetComponent<Renderer>().material;
+        playerMotor = this.GetComponent<PlayerMotor>();
+        armbandMeshRenderer = GameObject.FindGameObjectWithTag("Armband").GetComponent<MeshRenderer>();
         inputManager = gameObject.GetComponent<InputManager>();
     }
 
@@ -116,6 +122,7 @@ public class PlayerManager : MonoBehaviour
     {
         blinkTime += Time.deltaTime;
         blinkTime2 += Time.deltaTime;
+
         if (canMove == false)
         {
             //cant move
@@ -173,6 +180,9 @@ public class PlayerManager : MonoBehaviour
             case PLAYER_ACTION.THROWROCK:
                 Debug.Log("THIS WAS SUPPSED TO BE THROW ROCK LOL");
                 break;
+            case PLAYER_ACTION.WAKINGUP:
+                playerMotor.doWakeUp(StopAwake);
+                break;
         }
 
         switch (armbandState)
@@ -182,11 +192,11 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMaterial.color = BlinkColor1;
+                    armbandMeshRenderer.material = armbandMatActive;
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMaterial.color = BlinkColor2;
+                    armbandMeshRenderer.material = armbandMatInactive;
                 }
                 break;
             case ARMBAND_STATE.SEMIDANGER:
@@ -194,11 +204,11 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMaterial.color = BlinkColor1;
+                    armbandMeshRenderer.material = armbandMatActive;
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMaterial.color = BlinkColor2;
+                    armbandMeshRenderer.material = armbandMatInactive;
                 }
                 break;
             case ARMBAND_STATE.DANGER:
@@ -206,12 +216,15 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMaterial.color = BlinkColor1;
+                    armbandMeshRenderer.material = armbandMatActive;
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMaterial.color = BlinkColor2;
+                    armbandMeshRenderer.material = armbandMatInactive;
                 }
+                break;
+            case ARMBAND_STATE.ATTACK:
+                armbandMeshRenderer.material = armbandMatAttack;
                 break;
         }
 
@@ -237,6 +250,12 @@ public class PlayerManager : MonoBehaviour
             canWalk = true;
             canRun = true;
             canCrouch = true;
+        }
+
+        void StopAwake()
+        {
+            playerAction = PLAYER_ACTION.NOACTION;
+            canMove = true;
         }
     }
 
@@ -416,6 +435,11 @@ public class PlayerManager : MonoBehaviour
                     armbandState = ARMBAND_STATE.SEMIDANGER;
                 }
             }
+        }
+
+        if (canTakeDown == true || playerAction == PLAYER_ACTION.TAKEDOWN)
+        {
+            armbandState = ARMBAND_STATE.ATTACK;
         }
     }
 
