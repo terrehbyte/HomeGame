@@ -297,6 +297,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
         bool wasGrounded = grounded;
         grounded = PerformGroundCheck(transform.position, groundCheckLength, out groundCol, out groundNorm);
+
         crouchTimer += (crouchWish ? 1.0f : 0.0f) * Time.deltaTime;
         
         charController.height = coll.height = Mathf.Lerp(standHeight, crouchHeight, crouchProgress);
@@ -310,7 +311,9 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         if(!grounded)
         {
             velocity = Accelerate(Vector3.down, velocity, 9.8f, 53.0f );
+            charController.Move(velocity * Time.deltaTime);
         }
+
     }
 
     void OnDrawGizmos()
