@@ -9,9 +9,8 @@ public class HairMovement : MonoBehaviour
     [SerializeField] AnimationCurve[] curves;
     [Header("Pass the character speed to the frequency")]
 
-    public float characterSpeed = 0f;
-    [Range(.01f,10)]
-    public float frequencyMultiplier = 1f; 
+    public float frequencyMultiplier = 1f;
+
     
 
     // Use this for initialization
@@ -25,14 +24,15 @@ public class HairMovement : MonoBehaviour
 
     IEnumerator HairFlow()
     {
-        float startTime = Time.time;
 
+        int j = curves.Length;
         while (true)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < j; i++)
             {
-                rend.SetBlendShapeWeight(i, curves[i].Evaluate(Time.time % startTime * (1 + (characterSpeed * frequencyMultiplier))));
+                rend.SetBlendShapeWeight(i,  curves[i].Evaluate(Time.time * frequencyMultiplier) * 100);
             }
+            yield return null;
         }
     }
 
