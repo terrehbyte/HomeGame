@@ -1,0 +1,188 @@
+fileFormatVersion: 2
+guid: 2f29deb42ed34444caa3b52161a02f2a
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Arm_Band
+    100002: Armature
+    100004: Base
+    100006: bicept.L
+    100008: bicept.R
+    100010: Body
+    100012: chest
+    100014: Foot.L
+    100016: Foot.L_end
+    100018: Foot.R
+    100020: Foot.R_end
+    100022: Forarm.L
+    100024: Forarm.R
+    100026: Hand.L
+    100028: Hand.L_end
+    100030: Hand.R
+    100032: Hand.R_end
+    100034: head
+    100036: head_end
+    100038: hip.L
+    100040: hip.R
+    100042: homegirl
+    100044: //RootNode
+    100046: neck
+    100048: Shin.L.001
+    100050: Shin.R.001
+    100052: Shoulder.L
+    100054: Shoulder.R
+    100056: thigh.L.001
+    100058: thigh.R.001
+    100060: tummy
+    400000: Arm_Band
+    400002: Armature
+    400004: Base
+    400006: bicept.L
+    400008: bicept.R
+    400010: Body
+    400012: chest
+    400014: Foot.L
+    400016: Foot.L_end
+    400018: Foot.R
+    400020: Foot.R_end
+    400022: Forarm.L
+    400024: Forarm.R
+    400026: Hand.L
+    400028: Hand.L_end
+    400030: Hand.R
+    400032: Hand.R_end
+    400034: head
+    400036: head_end
+    400038: hip.L
+    400040: hip.R
+    400042: homegirl
+    400044: //RootNode
+    400046: neck
+    400048: Shin.L.001
+    400050: Shin.R.001
+    400052: Shoulder.L
+    400054: Shoulder.R
+    400056: thigh.L.001
+    400058: thigh.R.001
+    400060: tummy
+    2100000: Material
+    2100002: No Name
+    2300000: Arm_Band
+    3300000: Arm_Band
+    4300000: homegirl
+    4300002: Arm_Band
+    7400000: ArmsDown
+    7400002: Idle
+    7400004: Run
+    7400006: Walk.001
+    7400008: Sidle_Crouch
+    7400010: Sidle_Stand
+    7400012: Wall_Idle
+    7400014: Knock
+    7400016: takedown
+    7400018: Armature|Action
+    7400020: Armature|Action.001
+    7400022: Armature|ArmsDown
+    7400024: Armature|Crouch
+    7400026: Armature|Idle
+    7400028: Armature|Knock
+    7400030: 'Armature|opening stand up real '
+    7400032: Armature|Run
+    7400034: Armature|Run 2
+    7400036: Armature|Sidle_Crouch
+    7400038: Armature|Sidle_Stand
+    7400040: Armature|takedown
+    7400042: Armature|Walk
+    7400044: Armature|Wall_Idle
+    7400046: homegirl|Action
+    7400048: homegirl|Action.001
+    7400050: homegirl|Sidle_Stand
+    9500000: //RootNode
+    13700000: homegirl
+    2186277476908879412: ImportLogs
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
