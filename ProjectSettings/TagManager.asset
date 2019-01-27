@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Armband
+  - Trigger
   layers:
   - Default
   - TransparentFX
