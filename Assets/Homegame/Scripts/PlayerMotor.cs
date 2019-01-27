@@ -329,16 +329,19 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
         if (eventInfo.message == "KnockEnd")
         {
+            Debug.Log("Knock stop");
             knockAnimationFinished = true;
         }
 
         if (eventInfo.message == "TakedownExit")
         {
+            Debug.Log("Takedown stop");
             takedownAnimationFinished = true;
         }
 
         if (eventInfo.message == "OpeningExit")
         {
+            Debug.Log("Openning stop");
             wakeUpAnimationFinished = true;
         }
 
