@@ -1212,23 +1212,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e0fc0e7046ba6742b4a41198cc25620, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMotor: {fileID: 3815216123334604265}
-  inputManager: {fileID: 0}
   showTriggers: 0
   playerState: 0
   playerAction: 0
   armbandState: 0
   isCrouching: 0
-  sidleAngleThreshold: 0.6
-  runLimit: 0
+  playerMotor: {fileID: 3815216123334604265}
+  inputManager: {fileID: 0}
   zone1Radius: 10
   zone2Radius: 15
-  BlinkColor1: {r: 1, g: 0, b: 0, a: 0}
-  BlinkColor2: {r: 1, g: 1, b: 1, a: 0}
+  armbandMatActive: {fileID: 2100000, guid: e62892efc263c1f43bc4db82083513f9, type: 2}
+  armbandMatInactive: {fileID: 2100000, guid: 86863d11a15307c48b5c7a05c4f23133, type: 2}
+  armbandMatAttack: {fileID: 2100000, guid: 32684de238eade6459214a6818185598, type: 2}
   slowBlinkSpeed: 1
   medBlinkSpeed: 3
   highBlinkSpeed: 5
   blinkSpeed: 10
+  canMove: 1
+  canWalk: 1
+  canRun: 1
+  canCrouch: 1
+  canKnock: 0
+  canThrowRock: 0
+  canTakeDown: 0
+  sidleAngleThreshold: 0.6
+  runLimit: 0
   sidleProximity: 1
   autoSidle: 1
   enviromentLayerMask:
@@ -1238,15 +1246,7 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 4096
-  canMove: 1
-  canWalk: 1
-  canRun: 1
-  canCrouch: 1
-  canKnock: 0
-  canThrowRock: 0
-  canTakeDown: 0
   selfCapsuleCollider: {fileID: 0}
-  selfRenderer: {fileID: 0}
   previousPlayerState: 0
 --- !u!114 &3085114730104188166
 MonoBehaviour:
