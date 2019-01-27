@@ -74,6 +74,7 @@ MonoBehaviour:
   alertClip: {fileID: 8300000, guid: 5dd0aa5ca94646b4f9f3d50683774d8c, type: 3}
   wristBandClip: {fileID: 8300000, guid: dc58630bd75719c4caff7b04c12e653a, type: 3}
   playerObject: {fileID: 5434193361560658744}
+  transitionTime: 0
 --- !u!1001 &4315700011042955352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -746,6 +747,11 @@ PrefabInstance:
       propertyPath: sidleRaycastOrigin
       value: 
       objectReference: {fileID: 7230750378932671677}
+    - target: {fileID: 9174946611889630863, guid: 524c2fca2eb7a7347a01a605d0c41093,
+        type: 3}
+      propertyPath: audioLord
+      value: 
+      objectReference: {fileID: 3725902557791222044}
     - target: {fileID: 3815216123334604265, guid: 524c2fca2eb7a7347a01a605d0c41093,
         type: 3}
       propertyPath: charController
