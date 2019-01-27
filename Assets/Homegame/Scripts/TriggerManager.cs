@@ -20,6 +20,7 @@ public class TriggerManager : MonoBehaviour
     {
         text = "";
         shitChanged = true;
+        textBox = GameObject.FindGameObjectWithTag("TextMeshPro").GetComponent<TextMeshProUGUI>();
     }
     // Update is called once per frame
     void Update()
