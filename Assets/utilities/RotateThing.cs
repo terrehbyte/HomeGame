@@ -22,7 +22,13 @@ public class RotateThing : MonoBehaviour
         }
     }
 
+    public void Engage()
+    {
 
+        shouldRotate = false;
+
+
+    }
 
 
 

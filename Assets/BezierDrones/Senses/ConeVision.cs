@@ -1,10 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;//for testing
+using UnityEngine.Events;
 
 public class ConeVision : MonoBehaviour
 {
 
+    [SerializeField]UnityEvent Thing;
+
+   [SerializeField] Image indicator;
    Vector3 lastPosition;
 
 
@@ -13,8 +18,12 @@ public class ConeVision : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             lastPosition = other.transform.position;
+            Thing.Invoke();
+            indicator.color = Color.red;
         }
     }
+
+
 
 
     IEnumerator OnPatrol()
@@ -31,11 +40,6 @@ public class ConeVision : MonoBehaviour
 
             yield return null;
         }
-
-
-
-
-
     }
 
 
