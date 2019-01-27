@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TorsoMask
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Arm_Band
+    m_Weight: 0
+  - m_Path: Armature
+    m_Weight: 0
+  - m_Path: Armature/Base
+    m_Weight: 0
+  - m_Path: Armature/Base/Body
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_L
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_L/thigh_L_001
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_L/thigh_L_001/Shin_L_001
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_L/thigh_L_001/Shin_L_001/Foot_L
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_R
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_R/thigh_R_001
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_R/thigh_R_001/Shin_R_001
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/hip_R/thigh_R_001/Shin_R_001/Foot_R
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/tummy
+    m_Weight: 0
+  - m_Path: Armature/Base/Body/tummy/chest
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/neck
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/neck/head
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_L
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_L/bicept_L
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_L/bicept_L/Forarm_L
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_L/bicept_L/Forarm_L/Hand_L
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_R
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_R/bicept_R
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_R/bicept_R/Forarm_R
+    m_Weight: 1
+  - m_Path: Armature/Base/Body/tummy/chest/Shoulder_R/bicept_R/Forarm_R/Hand_R
+    m_Weight: 1
+  - m_Path: homegirl
+    m_Weight: 0

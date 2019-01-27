@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMotor : MonoBehaviour
+public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 {
     [Header("Components")]
     public CharacterController charController;
     public CapsuleCollider coll;
     public PlayerManager manager;
+    [SerializeField] Animator animator;
 
     [Header("Movement")]
     public float sidleLerpSpeed = 1;
@@ -67,6 +68,11 @@ public class PlayerMotor : MonoBehaviour
     {
         playerCamera = Camera.main;
     }
+    private void Start()
+    {
+        //this should work? sorry if it doesnt. UwU
+        animator = this.GetComponentInChildren<Animator>();
+    }
 
     public Vector3 ControllerToWorldDirection(Vector3 controllerDir, float maxMagnitude = 1)
     {
@@ -86,6 +92,7 @@ public class PlayerMotor : MonoBehaviour
         charController.Move(delta);
 
         transform.forward = velocity.normalized;
+        animator.SetFloat("Speed", velocity.magnitude);
     }
 
     public void Run(Vector3 runDir)
@@ -97,6 +104,7 @@ public class PlayerMotor : MonoBehaviour
         charController.Move(delta);
 
         transform.forward = velocity.normalized;
+        animator.SetFloat("Speed", velocity.magnitude);
     }
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
@@ -107,6 +115,9 @@ public class PlayerMotor : MonoBehaviour
         // exit if player pulls away from wall
         if(input.z < sidleExitZThreshold)
         {
+            animator.SetBool("isSidle", false);
+            animator.SetFloat("Speed", velocity.magnitude);
+
             sidleCamera.gameObject.SetActive(false);
             exitSidleCallback.Invoke();
             return;
@@ -147,21 +158,28 @@ public class PlayerMotor : MonoBehaviour
 
         if(canMove)
         {
+            animator.SetBool("isSidle", true);
+            animator.SetFloat("Speed", velocity.magnitude);
+
             charController.Move(delta);
         }
     }
 
     public void Idle(Vector3 idleDir)
     {
+        animator.SetFloat("Speed", 0.0f);
     }
 
     public void StartCrouch()
     {
+        animator.SetBool("isCrouching", true);
         crouchWish = true;
     }
 
     public void StopCrouch()
     {
+
+        animator.SetBool("isCrouching", false);
         crouchWish = false;
         crouchTimer = 0.0f;
     }
@@ -174,9 +192,10 @@ public class PlayerMotor : MonoBehaviour
     public void doTakedown(GameObject enemy, System.Action exitCallback)
     {
 
+        animator.SetTrigger("Takedown");
         //LEGIT JUST TO SIMULATE TAKING DOWN
         DELETEME += Time.deltaTime;
-        if (DELETEME >= 2)
+        if (DELETEME >= 2/3)
         {
             GameObject.Destroy(enemy);
             exitCallback();
@@ -187,8 +206,19 @@ public class PlayerMotor : MonoBehaviour
     public void doKnock(System.Action exitCallback)
     {
         //DO SHIT
+        animator.SetTrigger("Knocked");
         exitCallback();
     }
+
+    public void doWakeUp(System.Action exitCallback)
+    {
+        //DO SHIT
+        if(/* Animation is done*/ true)
+        {
+            exitCallback();
+        }
+    }
+
 
     // Returns the player's new velocity when moving on the ground
     // accelDir: world-space direction to accelerate in
@@ -283,5 +313,10 @@ public class PlayerMotor : MonoBehaviour
     {
         charController = GetComponent<CharacterController>();
         coll = GetComponent<CapsuleCollider>();
+    }
+
+    public void OnStateChanged(AnimatorEventInfo eventInfo)
+    {
+
     }
 }
