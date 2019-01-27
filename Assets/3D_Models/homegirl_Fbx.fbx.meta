@@ -48,6 +48,9 @@ ModelImporter:
     100084: tummy
     100086: Arm_Band
     100088: Armature
+    100090: Empty
+    100092: Foot IK temp
+    100094: homegirl
     400000: //RootNode
     400002: homegirl_pre_mirror.000
     400004: homegirl_pre_mirror.001
@@ -93,6 +96,9 @@ ModelImporter:
     400084: tummy
     400086: Arm_Band
     400088: Armature
+    400090: Empty
+    400092: Foot IK temp
+    400094: homegirl
     2100000: Material
     2100002: No Name
     2300000: homegirl_pre_mirror.000
@@ -143,6 +149,7 @@ ModelImporter:
     4300026: Plane
     4300028: homegirl_pre_mirror.001
     4300030: Arm_Band
+    4300032: homegirl
     7400000: ArmsDown
     7400002: Idle
     7400004: Armature|ArmsDown
@@ -168,8 +175,17 @@ ModelImporter:
     7400044: Armature|takedown
     7400046: Armature|Walk
     7400048: Armature|Wall_Idle
+    7400050: homegirl_pre_mirror.001|Action
+    7400052: homegirl_pre_mirror.001|Action.001
+    7400054: homegirl_pre_mirror.001|Arm_Band_Smash
+    7400056: homegirl_pre_mirror.001|Sidle_Stand
+    7400058: homegirl|Action
+    7400060: homegirl|Action.001
+    7400062: homegirl|Arm_Band_Smash
+    7400064: homegirl|Sidle_Stand
     9500000: //RootNode
     13700000: homegirl_pre_mirror.001
+    13700002: homegirl
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
@@ -205,6 +221,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -229,6 +246,9 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:

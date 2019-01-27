@@ -33,6 +33,7 @@ ModelImporter:
     100054: thigh_L_001
     100056: thigh_R_001
     100058: tummy
+    100060: homegirl
     400000: Arm_Band
     400002: Armature
     400004: Base
@@ -63,6 +64,7 @@ ModelImporter:
     400054: thigh_L_001
     400056: thigh_R_001
     400058: tummy
+    400060: homegirl
     2100000: unnamed
     2100002: Material
     2300000: Arm_Band
@@ -75,6 +77,7 @@ ModelImporter:
     4300002: Cube
     4300004: homegirl_pre_mirror_001
     4300006: Arm_Band
+    4300008: homegirl
     7400000: Default Take
     7400002: ArmsDown
     7400004: Crouch
@@ -90,6 +93,7 @@ ModelImporter:
     7400024: Wall_Idle
     9500000: //RootNode
     13700000: homegirl_pre_mirror_001
+    13700002: homegirl
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
