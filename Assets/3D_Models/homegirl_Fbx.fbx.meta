@@ -148,6 +148,26 @@ ModelImporter:
     7400004: Armature|ArmsDown
     7400006: Armature|Idle
     7400008: Armature|Tpose
+    7400010: Run
+    7400012: Walk.001
+    7400014: Sidle_Crouch
+    7400016: Sidle_Stand
+    7400018: Wall_Idle
+    7400020: Knock
+    7400022: takedown
+    7400024: Armature|Action
+    7400026: Armature|Action.001
+    7400028: Armature|Arm_Band_Smash
+    7400030: Armature|Crouch
+    7400032: Armature|Knock
+    7400034: 'Armature|opening stand up real '
+    7400036: Armature|Run
+    7400038: Armature|Run 2
+    7400040: Armature|Sidle_Crouch
+    7400042: Armature|Sidle_Stand
+    7400044: Armature|takedown
+    7400046: Armature|Walk
+    7400048: Armature|Wall_Idle
     9500000: //RootNode
     13700000: homegirl_pre_mirror.001
     2186277476908879412: ImportLogs
