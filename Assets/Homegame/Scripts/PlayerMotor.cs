@@ -164,7 +164,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         bool canMove = false;
         foreach(var candidate in continuousSidleCandidates)
         {
-            if(candidate.collider != manager.sidleWallCollider) { continue; }
+            //if(candidate.collider != manager.sidleWallCollider) { continue; }
             canMove = true;
             break;
         }
