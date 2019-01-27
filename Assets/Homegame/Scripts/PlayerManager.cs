@@ -42,8 +42,6 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public bool canCrouch = true;
     [ReadOnlyField]
-    public bool canSidle = false;
-    [ReadOnlyField]
     public bool canKnock = false;
     [ReadOnlyField]
     public bool canThrowRock = false;
@@ -188,7 +186,6 @@ public class PlayerManager : MonoBehaviour
 
         void tempFunc()
         {
-            Debug.Log("exit sidle");
             canWalk = true;
             canRun = true;
             playerState = previousPlayerState;
@@ -271,7 +268,6 @@ public class PlayerManager : MonoBehaviour
                 isCrouching = false;
             }
         }
-
 
         if (sidleCandidates.Length > 0)
         {

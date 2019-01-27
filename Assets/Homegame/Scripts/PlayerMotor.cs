@@ -70,7 +70,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Walk(Vector3 walkDir)
     {
-        Debug.Log("WALKING");
         Vector3 input = ControllerToWorldDirection(walkDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -82,7 +81,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Run(Vector3 runDir)
     {
-        Debug.Log("RUNNING");
         Vector3 input = ControllerToWorldDirection(runDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -106,7 +104,7 @@ public class PlayerMotor : MonoBehaviour
             sidleSurfaceNormal = wallForward;
             transform.forward = Vector3.RotateTowards(transform.forward, wallForward, Mathf.Deg2Rad * (sidleAlignmentDegreesPerSecond * Time.deltaTime), 0.0f);
 
-            return;
+            input = Vector3.zero;
         }
 
         Vector3 worldWishDir = Quaternion.Euler(0, Quaternion.LookRotation(-wallForward, Vector3.up).eulerAngles.y, 0) * input;
@@ -117,7 +115,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Idle(Vector3 idleDir)
     {
-        Debug.Log("IDLE");
     }
 
     public void StartCrouch()
@@ -213,8 +210,11 @@ public class PlayerMotor : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, Vector3.down * groundCheckLength);
 
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawRay(transform.position, sidleSurfaceNormal * 10.0f);
+        if(manager.playerState == PlayerManager.PLAYER_STATE.SIDLE)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawRay(transform.position, sidleSurfaceNormal * 10.0f);
+        }
     }
 
     void Reset()
