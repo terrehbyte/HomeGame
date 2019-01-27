@@ -19,7 +19,11 @@ public class ConeVision : MonoBehaviour
         {
             lastPosition = other.transform.position;
             Thing.Invoke();
-            indicator.color = Color.red;
+            if (indicator != null)
+            {
+                indicator.color = Color.red;
+                transform.LookAt(lastPosition);
+            }
         }
     }
 
