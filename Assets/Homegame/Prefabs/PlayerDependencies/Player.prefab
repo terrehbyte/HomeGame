@@ -16,9 +16,10 @@ GameObject:
   - component: {fileID: 2171536950022498250}
   - component: {fileID: 6161894975481101484}
   - component: {fileID: 1025851173}
+  - component: {fileID: 1757100771008433868}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,6 +155,7 @@ MonoBehaviour:
   sidleCameraDistance: 2
   sidleEdgeLimit: 0.5
   sidleExitZThreshold: -0.3
+  grounded: 0
   groundCheckLength: 1.5
   groundCheckLayer:
     serializedVersion: 2
@@ -175,6 +177,7 @@ MonoBehaviour:
   playerMotor: {fileID: 2171536950022498250}
   inputManager: {fileID: 0}
   animator: {fileID: 0}
+  showTriggers: 0
   playerState: 0
   playerAction: 0
   armbandState: 0
@@ -225,6 +228,19 @@ MonoBehaviour:
   gamepadB: 0
   gamepadX: 0
   gamepadY: 0
+--- !u!114 &1757100771008433868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2171536950022498293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722e25b3dc80a9b4395ef7624c7cd18b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textBox: {fileID: 0}
 --- !u!1 &3154605741889760840
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,9 +525,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3535381108368182012}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &3535381108368576586 stripped
+--- !u!4 &3535381108368576594 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 400054, guid: a22d575c4a917c54a9ec84ca0e7ba8a7,
+  m_CorrespondingSourceObject: {fileID: 400046, guid: a22d575c4a917c54a9ec84ca0e7ba8a7,
     type: 3}
   m_PrefabInstance: {fileID: 3535381108368182012}
   m_PrefabAsset: {fileID: 0}
@@ -617,9 +633,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3535381108368182012}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &3535381108368576594 stripped
+--- !u!4 &3535381108368576586 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 400046, guid: a22d575c4a917c54a9ec84ca0e7ba8a7,
+  m_CorrespondingSourceObject: {fileID: 400054, guid: a22d575c4a917c54a9ec84ca0e7ba8a7,
     type: 3}
   m_PrefabInstance: {fileID: 3535381108368182012}
   m_PrefabAsset: {fileID: 0}
