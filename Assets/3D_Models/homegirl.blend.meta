@@ -21,6 +21,30 @@ ModelImporter:
     100030: Plane_008
     100032: Plane_009
     100034: Plane_012
+    100036: Arm_Band
+    100038: Armature
+    100040: Base
+    100042: bicept_L
+    100044: bicept_R
+    100046: Body
+    100048: chest
+    100050: Foot_L
+    100052: Foot_R
+    100054: Forarm_L
+    100056: Forarm_R
+    100058: Hand_L
+    100060: Hand_R
+    100062: head
+    100064: hip_L
+    100066: hip_R
+    100068: neck
+    100070: Shin_L_001
+    100072: Shin_R_001
+    100074: Shoulder_L
+    100076: Shoulder_R
+    100078: thigh_L_001
+    100080: thigh_R_001
+    100082: tummy
     400000: Cylinder
     400002: //RootNode
     400004: homegirl_pre_mirror_000
@@ -39,6 +63,30 @@ ModelImporter:
     400030: Plane_008
     400032: Plane_009
     400034: Plane_012
+    400036: Arm_Band
+    400038: Armature
+    400040: Base
+    400042: bicept_L
+    400044: bicept_R
+    400046: Body
+    400048: chest
+    400050: Foot_L
+    400052: Foot_R
+    400054: Forarm_L
+    400056: Forarm_R
+    400058: Hand_L
+    400060: Hand_R
+    400062: head
+    400064: hip_L
+    400066: hip_R
+    400068: neck
+    400070: Shin_L_001
+    400072: Shin_R_001
+    400074: Shoulder_L
+    400076: Shoulder_R
+    400078: thigh_L_001
+    400080: thigh_R_001
+    400082: tummy
     2100000: unnamed
     2100002: Material
     2300000: Cylinder
@@ -58,6 +106,7 @@ ModelImporter:
     2300028: Plane_008
     2300030: Plane_009
     2300032: Plane_012
+    2300034: Arm_Band
     3300000: Cylinder
     3300002: homegirl_pre_mirror_000
     3300004: homegirl_pre_mirror_001
@@ -75,6 +124,7 @@ ModelImporter:
     3300028: Plane_008
     3300030: Plane_009
     3300032: Plane_012
+    3300034: Arm_Band
     4300000: Cylinder
     4300002: homegirl_pre_mirror_004
     4300004: homegirl_pre_mirror_003
@@ -92,8 +142,11 @@ ModelImporter:
     4300028: homegirl_pre_mirror_000
     4300030: Plane
     4300032: homegirl_pre_mirror_001
+    4300034: Arm_Band
     7400000: Default Take
     9500000: //RootNode
+    13700000: homegirl_pre_mirror_001
+    2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
     importMaterials: 1
