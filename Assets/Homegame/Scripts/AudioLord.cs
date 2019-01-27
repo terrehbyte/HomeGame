@@ -21,6 +21,8 @@ public class AudioLord : MonoBehaviour
 
     public GameObject playerObject;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +33,8 @@ public class AudioLord : MonoBehaviour
         ActionSource1 = playerObject.AddComponent<AudioSource>();
         ActionSource2 = playerObject.AddComponent<AudioSource>();
         ActionSource3 = playerObject.AddComponent<AudioSource>();
+
+        
 
         musicSource1.clip = musicClip1;
         musicSource1.loop = true;
@@ -46,18 +50,13 @@ public class AudioLord : MonoBehaviour
 
     }
 
-    public void fadeOutIn(AudioSource fadeOutSource, AudioSource fadeInSource) {
-        if (fadeInSource.isPlaying == false) {
-            fadeInSource.Play();
-        }
-        fadeOutSource.volume -= 0.2f;
-        fadeInSource.volume =+ 0.2f;
+    public void BlinkCaller()
+    {
+        ActionSource1.PlayOneShot(wristBandClip);
 
-        if (fadeOutSource.volume <= 0f) {
-            fadeOutSource.Stop();
-        }
-        if (fadeInSource.volume >= 1f) { 
-        
-        }
+    }
+
+    public void FootCaller(){
+        footSource.PlayOneShot(footclip[Random.Range(0, 6)]);
     }
 }

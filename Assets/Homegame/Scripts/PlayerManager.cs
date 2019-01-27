@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public AudioLord audioLord;
+
     public bool showTriggers;
 
     public PLAYER_STATE playerState;
@@ -202,6 +204,8 @@ public class PlayerManager : MonoBehaviour
                     Debug.Log("NOBLINNK");
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
+                    audioLord.BlinkCaller();
+
                     armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
                     armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
@@ -219,6 +223,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
+                    audioLord.BlinkCaller();
                     armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
                     armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
@@ -233,6 +238,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
+                    audioLord.BlinkCaller();
                     armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
                     armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
