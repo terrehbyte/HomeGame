@@ -62,7 +62,6 @@ public class PlayerManager : MonoBehaviour
     public Vector3 sidleWallNormal { get; private set; }
     public Collider sidleWallCollider { get; private set; }
     public Vector3 sidleWallEntryPoint { get; private set; }
-    public Transform sidleRayOrigin;
 
     [Header("Takedown Shit")]
     //For Enemy Detection
@@ -199,14 +198,19 @@ public class PlayerManager : MonoBehaviour
             case ARMBAND_STATE.SAFE:
                 if (blinkTime >= 1 / slowBlinkSpeed)
                 {
+                    Debug.Log("NOBLINNK");
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.materials[1] = armbandMatActive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
+                    
                     Debug.Log("BLINNK");
-                    armbandMeshRenderer.materials[1] = armbandMatInactive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
+
                 }
                 break;
             case ARMBAND_STATE.SEMIDANGER:
@@ -214,11 +218,13 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.materials[1] = armbandMatActive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.materials[1] = armbandMatInactive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
                 }
                 break;
             case ARMBAND_STATE.DANGER:
@@ -226,15 +232,18 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMeshRenderer.materials[1] = armbandMatActive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMeshRenderer.materials[1] = armbandMatInactive;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
                 }
                 break;
             case ARMBAND_STATE.ATTACK:
-                armbandMeshRenderer.materials[1] = armbandMatAttack;
+                armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatAttack.GetColor("_Color"));
+                armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatAttack.GetColor("_EmissionColor"));
                 break;
         }
 
@@ -276,7 +285,8 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerState()
     {
-        sidleCandidates = Physics.RaycastAll(sidleRayOrigin.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore);
+        sidleCandidates = Physics.RaycastAll(transform.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore);
+
 
         if (inputManager.input.magnitude == 0.0f)
         {
@@ -456,6 +466,6 @@ public class PlayerManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(sidleRayOrigin.position, transform.forward * sidleProximity);
+        Gizmos.DrawRay(transform.position, transform.forward * sidleProximity);
     }
 }
