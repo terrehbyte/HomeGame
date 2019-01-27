@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class GameState : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class GameState : MonoBehaviour
 
     Coroutine currentCoroutine;
 
+    public UnityEvent OnGameStart;
+    public UnityEvent OnPlayerDeath;
+    public UnityEvent OnGameEnd;
+
     void Awake()
     {
         instance = instance == null ? this : instance;
@@ -22,18 +27,34 @@ public class GameState : MonoBehaviour
         //DontDestroyOnLoad(this);
 
         SceneManager.sceneLoaded += OnSceneLoaded;
-        TriggerFadeBirth();
+        TriggerGameStart();
 
     }
 
-    [ContextMenu("Trigger Birth")]
-    public void TriggerFadeBirth()
+    [ContextMenu("Trigger Game Start")]
+    public void TriggerGameStart()
+    {
+        TriggerFadeBirth();
+    }
+
+    [ContextMenu("Trigger Player Death")]
+    public void TriggerPlayerDeath()
+    {
+        TriggerFadeDeath();
+    }
+
+    [ContextMenu("Trigger Game End")]
+    public void TriggerGameEnd()
+    {
+
+    }
+
+    private void TriggerFadeBirth()
     {
         currentCoroutine = StartCoroutine(DoFadeBirthRoutine());
     }
 
-    [ContextMenu("Trigger Death")]
-    public void TriggerFadeDeath()
+    private void TriggerFadeDeath()
     {
         if(!inDeathSequence) { inDeathSequence = true; }
         else                 { return; }
