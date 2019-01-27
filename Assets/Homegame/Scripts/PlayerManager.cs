@@ -19,6 +19,15 @@ public class PlayerManager : MonoBehaviour
     [Header("Semi-Danger")]
     public float zone2Radius;
 
+    public Color BlinkColor1;
+    public Color BlinkColor2;
+
+    public float slowBlinkSpeed;
+    public float medBlinkSpeed;
+    public float highBlinkSpeed;
+    public float blinkSpeed;
+
+
     public bool autoSidle;
     public LayerMask enviromentLayerMask;
     public float triggerCapsuleRadiusOffset;
@@ -63,6 +72,8 @@ public class PlayerManager : MonoBehaviour
     public PLAYER_STATE previousPlayerState;
     private bool crouched = false;
     private Material armbandMaterial;
+    private float blinkTime;
+    private float blinkTime2;
 
     public enum PLAYER_STATE
     {
@@ -95,6 +106,8 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+        blinkTime += Time.deltaTime;
+        blinkTime2 += Time.deltaTime;
         if (canMove == false)
         {
             //cant move
@@ -146,13 +159,40 @@ public class PlayerManager : MonoBehaviour
         switch (armbandState)
         {
             case ARMBAND_STATE.SAFE:
-                armbandMaterial.color = Color.green;
+                if (blinkTime >= 1 / slowBlinkSpeed)
+                {
+                    blinkTime = 0.0f;
+                    blinkTime2 = 0.0f;
+                    armbandMaterial.color = BlinkColor1;
+                }
+                if(blinkTime2 >= 1/blinkSpeed)
+                {
+                    armbandMaterial.color = BlinkColor2;
+                }
                 break;
             case ARMBAND_STATE.SEMIDANGER:
-                armbandMaterial.color = Color.blue;
+                if (blinkTime >= 1 / medBlinkSpeed)
+                {
+                    blinkTime = 0.0f;
+                    blinkTime2 = 0.0f;
+                    armbandMaterial.color = BlinkColor1;
+                }
+                if (blinkTime2 >= 1 / blinkSpeed)
+                {
+                    armbandMaterial.color = BlinkColor2;
+                }
                 break;
             case ARMBAND_STATE.DANGER:
-                armbandMaterial.color = Color.red;
+                if (blinkTime >= 1 / highBlinkSpeed)
+                {
+                    blinkTime = 0.0f;
+                    blinkTime2 = 0.0f;
+                    armbandMaterial.color = BlinkColor1;
+                }
+                if (blinkTime2 >= 1 / blinkSpeed)
+                {
+                    armbandMaterial.color = BlinkColor2;
+                }
                 break;
         }
 
