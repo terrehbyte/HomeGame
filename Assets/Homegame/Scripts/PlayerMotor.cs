@@ -68,6 +68,11 @@ public class PlayerMotor : MonoBehaviour
     {
         playerCamera = Camera.main;
     }
+    private void Start()
+    {
+        //this should work? sorry if it doesnt. UwU
+        animator = this.GetComponentInChildren<Animator>();
+    }
 
     public Vector3 ControllerToWorldDirection(Vector3 controllerDir, float maxMagnitude = 1)
     {
@@ -110,6 +115,9 @@ public class PlayerMotor : MonoBehaviour
         // exit if player pulls away from wall
         if(input.z < sidleExitZThreshold)
         {
+            animator.SetBool("isSidle", false);
+            animator.SetFloat("Speed", velocity.magnitude);
+
             sidleCamera.gameObject.SetActive(false);
             exitSidleCallback.Invoke();
             return;
@@ -150,21 +158,28 @@ public class PlayerMotor : MonoBehaviour
 
         if(canMove)
         {
+            animator.SetBool("isSidle", true);
+            animator.SetFloat("Speed", velocity.magnitude);
+
             charController.Move(delta);
         }
     }
 
     public void Idle(Vector3 idleDir)
     {
+        animator.SetFloat("Speed", 0.0f);
     }
 
     public void StartCrouch()
     {
+        animator.SetBool("isCrouching", true);
         crouchWish = true;
     }
 
     public void StopCrouch()
     {
+
+        animator.SetBool("isCrouching", false);
         crouchWish = false;
         crouchTimer = 0.0f;
     }
@@ -177,9 +192,10 @@ public class PlayerMotor : MonoBehaviour
     public void doTakedown(GameObject enemy, System.Action exitCallback)
     {
 
+        animator.SetTrigger("Takedown");
         //LEGIT JUST TO SIMULATE TAKING DOWN
         DELETEME += Time.deltaTime;
-        if (DELETEME >= 2)
+        if (DELETEME >= 2/3)
         {
             GameObject.Destroy(enemy);
             exitCallback();
@@ -190,6 +206,7 @@ public class PlayerMotor : MonoBehaviour
     public void doKnock(System.Action exitCallback)
     {
         //DO SHIT
+        animator.SetTrigger("Knocked");
         exitCallback();
     }
 

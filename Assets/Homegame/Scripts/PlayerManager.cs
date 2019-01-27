@@ -6,7 +6,6 @@ public class PlayerManager : MonoBehaviour
 {
     public PlayerMotor playerMotor;
     public InputManager inputManager;
-    public Animator animator;
 
     public bool showTriggers;
 
@@ -228,6 +227,7 @@ public class PlayerManager : MonoBehaviour
         {
             canWalk = true;
             canRun = true;
+            canCrouch = true;
             playerAction = PLAYER_ACTION.NOACTION;
         }
 
