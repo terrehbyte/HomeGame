@@ -156,7 +156,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         Vector3 nextPosition = transform.position + velocity * Time.deltaTime;
         Vector3 delta = nextPosition - transform.position;
 
-        Ray ray = new Ray(transform.position + velocity.normalized * sidleEdgeLimit, -wallForward);
+        Ray ray = new Ray(manager.sidleRaycastOrigin.position + velocity.normalized * sidleEdgeLimit, -wallForward);
 
         Debug.DrawRay(ray.origin, ray.direction * sidleValidQueryLength, Color.yellow, 0.0f);
         var continuousSidleCandidates = Physics.RaycastAll(ray, sidleValidQueryLength, manager.enviromentLayerMask, QueryTriggerInteraction.Ignore);

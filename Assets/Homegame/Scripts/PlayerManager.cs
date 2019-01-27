@@ -62,6 +62,7 @@ public class PlayerManager : MonoBehaviour
     public Vector3 sidleWallNormal { get; private set; }
     public Collider sidleWallCollider { get; private set; }
     public Vector3 sidleWallEntryPoint { get; private set; }
+    public Transform sidleRaycastOrigin;
 
     [Header("Takedown Shit")]
     //For Enemy Detection
@@ -285,7 +286,7 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerState()
     {
-        sidleCandidates = Physics.RaycastAll(transform.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore);
+        sidleCandidates = Physics.RaycastAll(sidleRaycastOrigin.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore);
 
 
         if (inputManager.input.magnitude == 0.0f)
@@ -466,6 +467,6 @@ public class PlayerManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, transform.forward * sidleProximity);
+        Gizmos.DrawRay(sidleRaycastOrigin.position, transform.forward * sidleProximity);
     }
 }
