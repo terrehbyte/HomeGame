@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public PlayerMotor playerMotor;
+    public InputManager inputManager;
 
     public PLAYER_STATE playerState;
     public PLAYER_ACTION playerAction;
@@ -27,7 +28,7 @@ public class PlayerManager : MonoBehaviour
     public float blinkSpeed;
 
     public float sidleProximity = 1.0f;
-    
+
     public bool autoSidle;
     public LayerMask enviromentLayerMask;
     public float triggerCapsuleRadiusOffset;
@@ -49,8 +50,8 @@ public class PlayerManager : MonoBehaviour
     public bool canTakeDown = false;
 
     //For sidle detection
-    public Vector3 sidleWallNormal {get; private set;}
-    public Collider sidleWallCollider {get; private set;}
+    public Vector3 sidleWallNormal { get; private set; }
+    public Collider sidleWallCollider { get; private set; }
 
     //For Enemy Detection
     private int numEnemiesNearPlayer;
@@ -59,14 +60,23 @@ public class PlayerManager : MonoBehaviour
     private CapsuleCollider selfCapsuleCollider;
     public Renderer selfRenderer;
 
-    [Header("Input")]
-    private Vector3 input;
+
+    //For Detecting Enemys Above
+    private int numEnemiesAbovePlayer;
+    private Collider[] enemiesAbovePlayer = new Collider[1];
+
+
     [ReadOnlyField]
     public PLAYER_STATE previousPlayerState;
     private bool crouched = false;
     private Material armbandMaterial;
     private float blinkTime;
     private float blinkTime2;
+
+
+    //GAMEPAD SHIT
+
+
 
     public enum PLAYER_STATE
     {
@@ -82,7 +92,6 @@ public class PlayerManager : MonoBehaviour
         THROWROCK,
         TAKEDOWN
     }
-
     public enum ARMBAND_STATE
     {
         SAFE,
@@ -95,6 +104,7 @@ public class PlayerManager : MonoBehaviour
         selfCapsuleCollider = this.GetComponent<CapsuleCollider>();
         selfRenderer = this.GetComponent<Renderer>();
         armbandMaterial = GameObject.FindGameObjectWithTag("Armband").GetComponent<Renderer>().material;
+        inputManager = gameObject.GetComponent<InputManager>();
     }
 
     void Update()
@@ -116,16 +126,16 @@ public class PlayerManager : MonoBehaviour
         switch (playerState)
         {
             case PLAYER_STATE.STILL:
-                playerMotor.Idle(input);
+                playerMotor.Idle(inputManager.input);
                 break;
             case PLAYER_STATE.WALK:
-                playerMotor.Walk(input);
+                playerMotor.Walk(inputManager.input);
                 break;
             case PLAYER_STATE.RUN:
-                playerMotor.Run(input);
+                playerMotor.Run(inputManager.input);
                 break;
             case PLAYER_STATE.SIDLE:
-                playerMotor.Sidle(input, sidleWallNormal, tempFunc);
+                playerMotor.Sidle(inputManager.input, sidleWallNormal, StopSidle);
                 break;
         }
         if (isCrouching == true)
@@ -145,6 +155,22 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
+        switch (playerAction)
+        {
+            case PLAYER_ACTION.NOACTION:
+
+                break;
+            case PLAYER_ACTION.TAKEDOWN:
+                playerMotor.doTakedown(enemiesAbovePlayer[0].gameObject, StopTakeDown);
+                break;
+            case PLAYER_ACTION.KNOCK:
+
+                break;
+            case PLAYER_ACTION.THROWROCK:
+
+                break;
+        }
+
         switch (armbandState)
         {
             case ARMBAND_STATE.SAFE:
@@ -154,7 +180,7 @@ public class PlayerManager : MonoBehaviour
                     blinkTime2 = 0.0f;
                     armbandMaterial.color = BlinkColor1;
                 }
-                if(blinkTime2 >= 1/blinkSpeed)
+                if (blinkTime2 >= 1 / blinkSpeed)
                 {
                     armbandMaterial.color = BlinkColor2;
                 }
@@ -185,12 +211,19 @@ public class PlayerManager : MonoBehaviour
                 break;
         }
 
-        void tempFunc()
+        void StopSidle()
         {
             canWalk = true;
             canRun = true;
             playerState = previousPlayerState;
             previousPlayerState = PLAYER_STATE.SIDLE;
+        }
+
+        void StopTakeDown()
+        {
+            canWalk = true;
+            canRun = true;
+            playerAction = PLAYER_ACTION.NOACTION;
         }
     }
 
@@ -198,13 +231,10 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerState()
     {
-        sidleCandidates = Physics.RaycastAll(transform.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore  );
+        sidleCandidates = Physics.RaycastAll(transform.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore);
 
-        input = new Vector3(Input.GetAxisRaw("Horizontal"),
-                                   0.0f,
-                                   Input.GetAxisRaw("Vertical"));
 
-        if (input.magnitude == 0.0f)
+        if (inputManager.input.magnitude == 0.0f)
         {
             if (playerState != PLAYER_STATE.STILL && playerState != PLAYER_STATE.SIDLE)
             {
@@ -218,7 +248,7 @@ public class PlayerManager : MonoBehaviour
             canThrowRock = false;
         }
 
-        if (canWalk == true && input.magnitude != 0.0f)
+        if (canWalk == true && inputManager.input.magnitude != 0.0f)
         {
             if (playerState != PLAYER_STATE.WALK)
             {
@@ -226,7 +256,7 @@ public class PlayerManager : MonoBehaviour
                 playerState = PLAYER_STATE.WALK;
             }
 
-            if (Input.GetKey(KeyCode.LeftShift) && canRun == true)
+            if ( Input.GetKey(KeyCode.LeftShift)    && canRun == true)
             {
                 if (playerState != PLAYER_STATE.RUN)
                 {
@@ -252,7 +282,7 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.C) && canCrouch == true)
+        if ( (Input.GetKey(KeyCode.C) || inputManager.gamepadA) && canCrouch == true)
         {
             if (isCrouching == false)
             {
@@ -304,8 +334,34 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerAction()
     {
+
+        //Shit for take down
+        numEnemiesAbovePlayer = Physics.OverlapCapsuleNonAlloc(transform.position,
+                                new Vector3(transform.position.x, transform.position.y + 1,
+                                transform.position.z), 1, enemiesAbovePlayer, enemyLayerMask);
+
+        if (numEnemiesAbovePlayer <= 0)
+        {
+            canTakeDown = false;
+        }
+        else if (/*enemiesAbovePlayer[0].gameObject.getComponent<script>().enemyState == 
+            enemiesAbovePlayer[0].gameObject.getComponent<script>().ENEMY_STATE.PATROL*/ true)
+        {
+            canTakeDown = true;
+        }
+
+        if ( (Input.GetKey(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
+        {
+            canKnock = false;
+            canThrowRock = false;
+            canWalk = false;
+            canRun = false;
+            canCrouch = false;
+            playerAction = PLAYER_ACTION.TAKEDOWN;
+        }
+
         //J for knock 
-        if (Input.GetKeyDown(KeyCode.J) && canKnock == true)
+        if ( (Input.GetKey(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
         {
             if (playerAction != PLAYER_ACTION.KNOCK)
             {
@@ -316,9 +372,9 @@ public class PlayerManager : MonoBehaviour
                 //TURN THESE BACK ON AFTER THE ANIM
             }
         }
-
+        
         //K for throwing a rock
-        if (Input.GetKey(KeyCode.K) && canThrowRock == true)
+        if ( (Input.GetKey(KeyCode.K) || inputManager.gamepadY) && canThrowRock == true)
         {
             if (playerAction != PLAYER_ACTION.THROWROCK)
             {
@@ -335,7 +391,7 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerArmband()
     {
-        numEnemiesNearPlayer = Physics.OverlapSphereNonAlloc(transform.position, zone2Radius, enemiesNearPlayer,enemyLayerMask);
+        numEnemiesNearPlayer = Physics.OverlapSphereNonAlloc(transform.position, zone2Radius, enemiesNearPlayer, enemyLayerMask);
         if (numEnemiesNearPlayer == 0)
         {
             armbandState = ARMBAND_STATE.SAFE;

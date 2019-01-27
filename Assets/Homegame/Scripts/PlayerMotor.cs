@@ -53,7 +53,7 @@ public class PlayerMotor : MonoBehaviour
     public Collider groundCol;
     [ReadOnlyField]
     public Vector3 groundNorm;
-
+    private float DELETEME;
 
     private void Awake()
     {
@@ -152,8 +152,16 @@ public class PlayerMotor : MonoBehaviour
 
     }
 
-    void doTakedown()
+    public void doTakedown(GameObject enemy, System.Action exitCallback)
     {
+
+        //LEGIT JUST TO SIMULATE TAKING DOWN
+        DELETEME += Time.deltaTime;
+        if (DELETEME >= 2)
+        {
+            GameObject.Destroy(enemy);
+            exitCallback();
+        }
 
     }
 
