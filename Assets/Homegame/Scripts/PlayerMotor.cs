@@ -52,6 +52,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public float sidleCameraDistance = 5.0f;
     public float sidleEdgeLimit = 0.5f;
     public float sidleExitZThreshold = 0.3f;
+    public float sidleCameraTargetOffset = 4.0f;
 
     [Header("Ground Check")]
     [ReadOnlyField]
@@ -111,6 +112,9 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
         sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
         sidleCamera.gameObject.SetActive(true);
+        var vcam = sidleCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
+        var transposer = vcam.GetCinemachineComponent<Cinemachine.CinemachineComposer>();
+        transposer.m_TrackedObjectOffset = new Vector3(-Input.GetAxis("Mouse X") * sidleCameraTargetOffset, 0.0f, 0.0f);
 
         // exit if player pulls away from wall
         if(input.z < sidleExitZThreshold)

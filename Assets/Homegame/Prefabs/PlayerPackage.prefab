@@ -104,17 +104,17 @@ PrefabInstance:
     - target: {fileID: 101687498290914002, guid: 805ea511bf983f44a86138b2ce182cdf,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.34042522
+      value: 0.34042525
       objectReference: {fileID: 0}
     - target: {fileID: 101687498290914002, guid: 805ea511bf983f44a86138b2ce182cdf,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00032420608
+      value: -0.00032423844
       objectReference: {fileID: 0}
     - target: {fileID: 101687498290914002, guid: 805ea511bf983f44a86138b2ce182cdf,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000117367155
+      value: 0.00011737888
       objectReference: {fileID: 0}
     - target: {fileID: 101687498290914002, guid: 805ea511bf983f44a86138b2ce182cdf,
         type: 3}
@@ -498,6 +498,12 @@ PrefabInstance:
       propertyPath: m_DefaultBlend.m_Time
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2933404975773622975, guid: 7fc8916ccdbd5354490a04318d0cc203,
+        type: 3}
+      propertyPath: m_CustomBlends
+      value: 
+      objectReference: {fileID: 11400000, guid: f3f05b5513144bc4d8af0e43e58a7877,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7fc8916ccdbd5354490a04318d0cc203, type: 3}
 --- !u!4 &5434193361813638854 stripped
@@ -594,6 +600,16 @@ PrefabInstance:
       propertyPath: m_ComponentOwner
       value: 
       objectReference: {fileID: 5434193362527758429}
+    - target: {fileID: 2315762827645214731, guid: 8a0a5964a59b25b47b1cb848a8c70e0f,
+        type: 3}
+      propertyPath: m_LookaheadTime
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2315762827645214731, guid: 8a0a5964a59b25b47b1cb848a8c70e0f,
+        type: 3}
+      propertyPath: m_LookaheadSmoothing
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2315762827645214732, guid: 8a0a5964a59b25b47b1cb848a8c70e0f,
         type: 3}
       propertyPath: m_FollowOffset.z
@@ -714,6 +730,11 @@ PrefabInstance:
         type: 3}
       propertyPath: crouchDuration
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3815216123334604265, guid: 524c2fca2eb7a7347a01a605d0c41093,
+        type: 3}
+      propertyPath: sidleCameraTargetOffset
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 9174946611889630863, guid: 524c2fca2eb7a7347a01a605d0c41093,
         type: 3}
