@@ -49,6 +49,8 @@ public class PlayerMotor : MonoBehaviour
     Vector3 sidleSurfaceNormal;
     public float sidleValidQueryLength = 1.0f;
     public float sidleCameraDistance = 5.0f;
+    public float sidleEdgeLimit = 0.5f;
+    public float sidleExitZThreshold = 0.3f;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -58,16 +60,15 @@ public class PlayerMotor : MonoBehaviour
     [ReadOnlyField]
     public Vector3 groundNorm;
     private float DELETEME;
-    public float sidleEdgeLimit = 0.5f;
 
     private void Awake()
     {
         playerCamera = Camera.main;
     }
 
-    public Vector3 ControllerToWorldDirection(Vector3 controllerDir)
+    public Vector3 ControllerToWorldDirection(Vector3 controllerDir, float maxMagnitude = 1)
     {
-        controllerDir.Normalize();
+        controllerDir = controllerDir.normalized * Mathf.Min(maxMagnitude, controllerDir.magnitude);
         controllerDir = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * controllerDir;
         controllerDir = Vector3.ProjectOnPlane(controllerDir, groundNorm);
 
@@ -99,7 +100,7 @@ public class PlayerMotor : MonoBehaviour
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
         // exit if player pulls away from wall
-        if(input.z < 0.0f)
+        if(input.z < sidleExitZThreshold)
         {
             sidleCamera.gameObject.SetActive(false);
             exitSidleCallback.Invoke();
