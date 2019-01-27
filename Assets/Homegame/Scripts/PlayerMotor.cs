@@ -9,6 +9,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public CapsuleCollider coll;
     public PlayerManager manager;
     [SerializeField] Animator animator;
+    public Renderer characterRenderer;
 
     [Header("Movement")]
     public float sidleLerpSpeed = 1;
@@ -52,6 +53,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public float sidleCameraDistance = 5.0f;
     public float sidleEdgeLimit = 0.5f;
     public float sidleExitZThreshold = 0.3f;
+    public float sidleCameraTargetOffset = 4.0f;
 
     [Header("Ground Check")]
     [ReadOnlyField]
@@ -63,6 +65,11 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     [ReadOnlyField]
     public Vector3 groundNorm;
     private float DELETEME;
+
+
+     private bool wakeUpAnimationFinished = false;
+     private bool takedownAnimationFinished = false;
+     private bool knockAnimationFinished = false;
 
     private void Awake()
     {
@@ -109,8 +116,12 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
-        sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
+        //sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
         sidleCamera.gameObject.SetActive(true);
+        var vcam = sidleCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
+        vcam.Follow = vcam.LookAt = manager.transform;
+        var transposer = vcam.GetCinemachineComponent<Cinemachine.CinemachineComposer>();
+        transposer.m_TrackedObjectOffset = new Vector3(-Input.GetAxis("Mouse X") * sidleCameraTargetOffset, 0.0f, 0.0f);
 
         // exit if player pulls away from wall
         if(input.z < sidleExitZThreshold)
@@ -118,6 +129,8 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
             animator.SetBool("isSidle", false);
             animator.SetFloat("Speed", velocity.magnitude);
 
+            vcam.Follow = null;
+            vcam.LookAt = null;
             sidleCamera.gameObject.SetActive(false);
             exitSidleCallback.Invoke();
             return;
@@ -143,7 +156,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         Vector3 nextPosition = transform.position + velocity * Time.deltaTime;
         Vector3 delta = nextPosition - transform.position;
 
-        Ray ray = new Ray(transform.position + velocity.normalized * sidleEdgeLimit, -wallForward);
+        Ray ray = new Ray(manager.sidleRaycastOrigin.position + velocity.normalized * sidleEdgeLimit, -wallForward);
 
         Debug.DrawRay(ray.origin, ray.direction * sidleValidQueryLength, Color.yellow, 0.0f);
         var continuousSidleCandidates = Physics.RaycastAll(ray, sidleValidQueryLength, manager.enviromentLayerMask, QueryTriggerInteraction.Ignore);
@@ -151,7 +164,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         bool canMove = false;
         foreach(var candidate in continuousSidleCandidates)
         {
-            if(candidate.collider != manager.sidleWallCollider) { continue; }
+            //if(candidate.collider != manager.sidleWallCollider) { continue; }
             canMove = true;
             break;
         }
@@ -193,22 +206,33 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
 
         animator.SetTrigger("Takedown");
-        //LEGIT JUST TO SIMULATE TAKING DOWN
-        DELETEME += Time.deltaTime;
-        if (DELETEME >= 2/3)
+        if (takedownAnimationFinished == true)
         {
             GameObject.Destroy(enemy);
-            exitCallback();
+            takedownAnimationFinished = false;
+            exitCallback.Invoke();
         }
 
     }
 
     public void doKnock(System.Action exitCallback)
     {
-        //DO SHIT
         animator.SetTrigger("Knocked");
-        exitCallback();
+        if (knockAnimationFinished == true)
+        {
+            knockAnimationFinished = false;
+            exitCallback.Invoke();
+        }
     }
+
+    public void doWakeUp(System.Action exitCallback)
+    {   
+        if(wakeUpAnimationFinished ==  true)
+        {
+            exitCallback.Invoke();
+        }
+    }
+
 
     // Returns the player's new velocity when moving on the ground
     // accelDir: world-space direction to accelerate in
@@ -245,6 +269,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     private Vector3 Impulse(Vector3 impulse, Vector3 prevVelocity)
     {
+        if(impulse.y > 0) { grounded = false; }
         return prevVelocity + impulse;
     }
 
@@ -273,8 +298,11 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     {
         bool wasGrounded = grounded;
         grounded = PerformGroundCheck(transform.position, groundCheckLength, out groundCol, out groundNorm);
+
         crouchTimer += (crouchWish ? 1.0f : 0.0f) * Time.deltaTime;
+        
         charController.height = coll.height = Mathf.Lerp(standHeight, crouchHeight, crouchProgress);
+        //charController.height = coll.height = characterRenderer.bounds.size.y;
         charController.center = coll.center = Vector3.up * (charController.height - 2) / 2;
 
         if(!wasGrounded && grounded)
@@ -284,7 +312,9 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         if(!grounded)
         {
             velocity = Accelerate(Vector3.down, velocity, 9.8f, 53.0f );
+            charController.Move(velocity * Time.deltaTime);
         }
+
     }
 
     void OnDrawGizmos()
@@ -307,6 +337,23 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     public void OnStateChanged(AnimatorEventInfo eventInfo)
     {
+        if (eventInfo.message == "KnockEnd")
+        {
+            Debug.Log("Knock stop");
+            knockAnimationFinished = true;
+        }
+
+        if (eventInfo.message == "TakedownExit")
+        {
+            Debug.Log("Takedown stop");
+            takedownAnimationFinished = true;
+        }
+
+        if (eventInfo.message == "OpeningExit")
+        {
+            Debug.Log("Openning stop");
+            wakeUpAnimationFinished = true;
+        }
 
     }
 }

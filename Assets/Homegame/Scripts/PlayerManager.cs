@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    public PlayerMotor playerMotor;
-    public InputManager inputManager;
+    public AudioLord audioLord;
 
     public bool showTriggers;
 
@@ -14,31 +13,31 @@ public class PlayerManager : MonoBehaviour
     public ARMBAND_STATE armbandState;
     public bool isCrouching;
 
-    public float sidleAngleThreshold = 15.0f;
-
+    [Range(0.0f,1.0f)]
     public float runLimit;
 
-    [Header("DANGER")]
+    [SerializeField]
+    private PlayerMotor playerMotor;
+    [SerializeField]
+    private InputManager inputManager;
+
+    [Header("ARMBAND SHIT")]
+
+    [Header("Danger Range")]
     public float zone1Radius;
-    [Header("Semi-Danger")]
+    [Header("Semi-Danger Range")]
     public float zone2Radius;
-
-    public Color BlinkColor1;
-    public Color BlinkColor2;
-
+    [Header("ADD MATERIALS")]
+    public Material armbandMatActive;
+    public Material armbandMatInactive;
+    public Material armbandMatAttack;
+    [Header("Blink Speeds")]
     public float slowBlinkSpeed;
     public float medBlinkSpeed;
     public float highBlinkSpeed;
     public float blinkSpeed;
 
-    public float sidleProximity = 1.0f;
-
-    public bool autoSidle;
-    public LayerMask enviromentLayerMask;
-    public float triggerCapsuleRadiusOffset;
-
-    public LayerMask enemyLayerMask;
-
+    [ReadOnlyField]
     public bool canMove = true;
     [ReadOnlyField]
     public bool canWalk = true;
@@ -53,28 +52,34 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public bool canTakeDown = false;
 
-    //For sidle detection
-    public Vector3 sidleWallNormal {get; private set;}
-    public Collider sidleWallCollider {get; private set;}
-    public Vector3 sidleWallEntryPoint {get; private set;}
 
+    [Header("Sidle Shit")]
+    public float sidleAngleThreshold = 15.0f;
+    public float sidleProximity = 1.0f;
+    public bool autoSidle;
+    public LayerMask enviromentLayerMask;
+    public float triggerCapsuleRadiusOffset;
+    public LayerMask enemyLayerMask;
+    //For sidle detection
+    public Vector3 sidleWallNormal { get; private set; }
+    public Collider sidleWallCollider { get; private set; }
+    public Vector3 sidleWallEntryPoint { get; private set; }
+    public Transform sidleRaycastOrigin;
+
+    [Header("Takedown Shit")]
     //For Enemy Detection
     private int numEnemiesNearPlayer;
     private Collider[] enemiesNearPlayer = new Collider[1];
-
     public CapsuleCollider selfCapsuleCollider;
-    public Renderer selfRenderer;
-
-
     //For Detecting Enemys Above
     private int numEnemiesAbovePlayer;
     private Collider[] enemiesAbovePlayer = new Collider[1];
 
-
+    
     [ReadOnlyField]
     public PLAYER_STATE previousPlayerState;
     private bool crouched = false;
-    private Material armbandMaterial;
+    private MeshRenderer armbandMeshRenderer;
     private float blinkTime;
     private float blinkTime2;
 
@@ -95,30 +100,37 @@ public class PlayerManager : MonoBehaviour
         NOACTION,
         KNOCK,
         THROWROCK,
-        TAKEDOWN
+        TAKEDOWN,
+        WAKINGUP
     }
     public enum ARMBAND_STATE
     {
         SAFE,
         SEMIDANGER,
-        DANGER
+        DANGER,
+        ATTACK
     }
 
     void Start()
     {
+        playerAction = PLAYER_ACTION.WAKINGUP;
+        canMove = false;
+
         selfCapsuleCollider = this.GetComponent<CapsuleCollider>();
-        selfRenderer = this.GetComponent<Renderer>();
-        armbandMaterial = GameObject.FindGameObjectWithTag("Armband").GetComponent<Renderer>().material;
-        inputManager = gameObject.GetComponent<InputManager>();
+        armbandMeshRenderer = GameObject.FindGameObjectWithTag("Armband").GetComponent<MeshRenderer>();
+        playerMotor = this.GetComponent<PlayerMotor>();
+        inputManager = this.GetComponent<InputManager>();
     }
 
     void Update()
     {
+
         blinkTime += Time.deltaTime;
         blinkTime2 += Time.deltaTime;
+
         if (canMove == false)
         {
-            //cant move
+            inputManager.input = new Vector3();
         }
         else
         {
@@ -134,10 +146,16 @@ public class PlayerManager : MonoBehaviour
                 playerMotor.Idle(inputManager.input);
                 break;
             case PLAYER_STATE.WALK:
+                if (canMove == true)
+                {
                 playerMotor.Walk(inputManager.input);
+                }
                 break;
             case PLAYER_STATE.RUN:
-                playerMotor.Run(inputManager.input);
+                if (canMove == true)
+                {
+                    playerMotor.Run(inputManager.input);
+                }
                 break;
             case PLAYER_STATE.SIDLE:
                 playerMotor.Sidle(inputManager.input, sidleWallNormal, StopSidle);
@@ -173,6 +191,9 @@ public class PlayerManager : MonoBehaviour
             case PLAYER_ACTION.THROWROCK:
                 Debug.Log("THIS WAS SUPPSED TO BE THROW ROCK LOL");
                 break;
+            case PLAYER_ACTION.WAKINGUP:
+                playerMotor.doWakeUp(StopAwake);
+                break;
         }
 
         switch (armbandState)
@@ -180,13 +201,21 @@ public class PlayerManager : MonoBehaviour
             case ARMBAND_STATE.SAFE:
                 if (blinkTime >= 1 / slowBlinkSpeed)
                 {
+                    Debug.Log("NOBLINNK");
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMaterial.color = BlinkColor1;
+                    audioLord.BlinkCaller();
+
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMaterial.color = BlinkColor2;
+                    
+                    Debug.Log("BLINNK");
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
+
                 }
                 break;
             case ARMBAND_STATE.SEMIDANGER:
@@ -194,11 +223,14 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMaterial.color = BlinkColor1;
+                    audioLord.BlinkCaller();
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMaterial.color = BlinkColor2;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
                 }
                 break;
             case ARMBAND_STATE.DANGER:
@@ -206,20 +238,30 @@ public class PlayerManager : MonoBehaviour
                 {
                     blinkTime = 0.0f;
                     blinkTime2 = 0.0f;
-                    armbandMaterial.color = BlinkColor1;
+                    audioLord.BlinkCaller();
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatActive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatActive.GetColor("_EmissionColor"));
                 }
                 if (blinkTime2 >= 1 / blinkSpeed)
                 {
-                    armbandMaterial.color = BlinkColor2;
+                    armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatInactive.GetColor("_Color"));
+                    armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatInactive.GetColor("_EmissionColor"));
                 }
+                break;
+            case ARMBAND_STATE.ATTACK:
+                armbandMeshRenderer.materials[1].SetColor("_Color", armbandMatAttack.GetColor("_Color"));
+                armbandMeshRenderer.materials[1].SetColor("_EmissionColor", armbandMatAttack.GetColor("_EmissionColor"));
                 break;
         }
 
         void StopSidle()
         {
+            canMove = true;
+
             canWalk = true;
             canRun = true;
-            playerState = previousPlayerState;
+            canKnock = false;
+            playerState = PLAYER_STATE.STILL;
             previousPlayerState = PLAYER_STATE.SIDLE;
         }
 
@@ -228,15 +270,21 @@ public class PlayerManager : MonoBehaviour
             canWalk = true;
             canRun = true;
             canCrouch = true;
+            canMove = true;
             playerAction = PLAYER_ACTION.NOACTION;
         }
 
         void StopKnock()
         {
             playerAction = PLAYER_ACTION.NOACTION;
-            canWalk = true;
-            canRun = true;
+            canMove = true;
             canCrouch = true;
+        }
+
+        void StopAwake()
+        {
+            playerAction = PLAYER_ACTION.NOACTION;
+            canMove = true;
         }
     }
 
@@ -244,7 +292,7 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdatePlayerState()
     {
-        sidleCandidates = Physics.RaycastAll(transform.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore);
+        sidleCandidates = Physics.RaycastAll(sidleRaycastOrigin.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore);
 
 
         if (inputManager.input.magnitude == 0.0f)
@@ -269,7 +317,7 @@ public class PlayerManager : MonoBehaviour
                 playerState = PLAYER_STATE.WALK;
             }
 
-            if ( (Input.GetKey(KeyCode.LeftShift) || inputManager.input.magnitude >= runLimit) && canRun == true)
+            if ((Input.GetKey(KeyCode.LeftShift) || inputManager.input.magnitude >= runLimit) && canRun == true)
             {
                 if (playerState != PLAYER_STATE.RUN)
                 {
@@ -295,7 +343,7 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        if ( (Input.GetKey(KeyCode.C) || inputManager.gamepadA) && canCrouch == true)
+        if ((Input.GetKey(KeyCode.C) || inputManager.gamepadA) && canCrouch == true)
         {
             if (isCrouching == false)
             {
@@ -304,16 +352,21 @@ public class PlayerManager : MonoBehaviour
                 canRun = false;
                 isCrouching = true;
             }
+            if (isCrouching == true)
+            {
+                canKnock = false;
+                canRun = false;
+            }
         }
         else
         {
-            if (isCrouching == true)
+            if(playerState == PLAYER_STATE.SIDLE)
             {
                 canKnock = true;
-                canRun = true;
-                
-                isCrouching = false;
             }
+
+            isCrouching = false;
+            canRun = true;
         }
 
         if (sidleCandidates.Length > 0)
@@ -324,7 +377,7 @@ public class PlayerManager : MonoBehaviour
                 {
                     playerState = PLAYER_STATE.SIDLE;
                     canKnock = true;
-                    canThrowRock = true;
+                    //canThrowRock = true;
                     canWalk = false;
                     canRun = false;
 
@@ -353,45 +406,38 @@ public class PlayerManager : MonoBehaviour
             canTakeDown = true;
         }
 
-        if ( (Input.GetKey(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
+        //Take down
+        if ((Input.GetKeyDown(KeyCode.L) || inputManager.gamepadX) && canTakeDown == true && playerAction == PLAYER_ACTION.NOACTION)
         {
-            canKnock = false;
-            canThrowRock = false;
-            canWalk = false;
-            canRun = false;
-            canCrouch = false;
+            canMove = false;
             playerAction = PLAYER_ACTION.TAKEDOWN;
         }
 
         //J for knock 
-        if ( (Input.GetKey(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
+        if ((Input.GetKeyDown(KeyCode.J) || inputManager.gamepadB) && canKnock == true)
         {
             if (playerAction != PLAYER_ACTION.KNOCK)
-            {
+            {             
                 playerAction = PLAYER_ACTION.KNOCK;
-                canThrowRock = false;
-                canTakeDown = false;
-                canWalk = false;
-                canRun = false;
                 canCrouch = false;
+                canMove = false;
                 //TURN THESE BACK ON AFTER THE ANIM
             }
         }
-        
-        //K for throwing a rock
-        if ( (Input.GetKey(KeyCode.K) || inputManager.gamepadY) && canThrowRock == true)
-        {
-            if (playerAction != PLAYER_ACTION.THROWROCK)
-            {
-                playerAction = PLAYER_ACTION.THROWROCK;
-                canWalk = false;
-                canRun = false;
 
-                canThrowRock = false;
-                canTakeDown = false;
-                //TURN THESE ON AFTER THE ANIM
-            }
-        }
+        ////K for throwing a rock
+        //if ((Input.GetKey(KeyCode.K) || inputManager.gamepadY) && canThrowRock == true)
+        //{
+        //    if (playerAction != PLAYER_ACTION.THROWROCK)
+        //    {
+        //        playerAction = PLAYER_ACTION.THROWROCK;
+        //        canWalk = false;
+        //        canRun = false;
+        //        canThrowRock = false;
+        //        canTakeDown = false;
+        //        canMove = false;
+        //    }
+        //}
     }
 
     private void UpdatePlayerArmband()
@@ -417,11 +463,16 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+
+        if (canTakeDown == true || playerAction == PLAYER_ACTION.TAKEDOWN)
+        {
+            armbandState = ARMBAND_STATE.ATTACK;
+        }
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, transform.forward * sidleProximity);
+        Gizmos.DrawRay(sidleRaycastOrigin.position, transform.forward * sidleProximity);
     }
 }
