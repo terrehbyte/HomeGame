@@ -9,6 +9,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public CapsuleCollider coll;
     public PlayerManager manager;
     [SerializeField] Animator animator;
+    public Renderer characterRenderer;
 
     [Header("Movement")]
     public float sidleLerpSpeed = 1;
@@ -115,9 +116,10 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
-        sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
+        //sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
         sidleCamera.gameObject.SetActive(true);
         var vcam = sidleCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
+        vcam.Follow = vcam.LookAt = manager.transform;
         var transposer = vcam.GetCinemachineComponent<Cinemachine.CinemachineComposer>();
         transposer.m_TrackedObjectOffset = new Vector3(-Input.GetAxis("Mouse X") * sidleCameraTargetOffset, 0.0f, 0.0f);
 
@@ -127,6 +129,8 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
             animator.SetBool("isSidle", false);
             animator.SetFloat("Speed", velocity.magnitude);
 
+            vcam.Follow = null;
+            vcam.LookAt = null;
             sidleCamera.gameObject.SetActive(false);
             exitSidleCallback.Invoke();
             return;
@@ -294,7 +298,9 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         bool wasGrounded = grounded;
         grounded = PerformGroundCheck(transform.position, groundCheckLength, out groundCol, out groundNorm);
         crouchTimer += (crouchWish ? 1.0f : 0.0f) * Time.deltaTime;
+        
         charController.height = coll.height = Mathf.Lerp(standHeight, crouchHeight, crouchProgress);
+        //charController.height = coll.height = characterRenderer.bounds.size.y;
         charController.center = coll.center = Vector3.up * (charController.height - 2) / 2;
 
         if(!wasGrounded && grounded)

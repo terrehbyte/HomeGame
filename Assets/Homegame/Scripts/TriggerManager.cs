@@ -20,7 +20,17 @@ public class TriggerManager : MonoBehaviour
     {
         text = "";
         shitChanged = true;
-        textBox = GameObject.FindGameObjectWithTag("TextMeshPro").GetComponent<TextMeshProUGUI>();
+        var go = GameObject.FindGameObjectWithTag("TextMeshPro");
+        if(go == null)
+        {
+            Debug.LogWarning("Textbox not present in scene, disabling TriggerMan.");
+            enabled = false;
+            return;
+        }
+
+        textBox = go.GetComponent<TextMeshProUGUI>();
+
+        textBox.GetComponent<TextMeshProUGUI>();
     }
     // Update is called once per frame
     void Update()
