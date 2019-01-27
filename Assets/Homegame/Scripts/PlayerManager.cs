@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class PlayerManager : MonoBehaviour
 {
     public PlayerMotor playerMotor;
@@ -12,12 +11,23 @@ public class PlayerManager : MonoBehaviour
     public ARMBAND_STATE armbandState;
     public bool isCrouching;
 
+    public float sidleAngleThreshold = 15.0f;
 
     [Header("DANGER")]
     public float zone1Radius;
     [Header("Semi-Danger")]
     public float zone2Radius;
 
+    public Color BlinkColor1;
+    public Color BlinkColor2;
+
+    public float slowBlinkSpeed;
+    public float medBlinkSpeed;
+    public float highBlinkSpeed;
+    public float blinkSpeed;
+
+    public float sidleProximity = 1.0f;
+    
     public bool autoSidle;
     public LayerMask enviromentLayerMask;
     public float triggerCapsuleRadiusOffset;
@@ -32,30 +42,22 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public bool canCrouch = true;
     [ReadOnlyField]
-    public bool canSidle = false;
-    [ReadOnlyField]
     public bool canKnock = false;
     [ReadOnlyField]
     public bool canThrowRock = false;
     [ReadOnlyField]
     public bool canTakeDown = false;
 
-    [SerializeField]
-    //FOR WALL DETECTION
-    private int numWallsNearPlayer;
-    private Collider[] wallsNearPlayer = new Collider[1];
-    private Vector3 triggerCapsuleTop;
-    private Vector3 triggerCapsuleBot;
+    //For sidle detection
+    public Vector3 sidleWallNormal {get; private set;}
+    public Collider sidleWallCollider {get; private set;}
 
     //For Enemy Detection
     private int numEnemiesNearPlayer;
     private Collider[] enemiesNearPlayer = new Collider[1];
 
-
-
     private CapsuleCollider selfCapsuleCollider;
     public Renderer selfRenderer;
-
 
     [Header("Input")]
     private Vector3 input;
@@ -63,6 +65,8 @@ public class PlayerManager : MonoBehaviour
     public PLAYER_STATE previousPlayerState;
     private bool crouched = false;
     private Material armbandMaterial;
+    private float blinkTime;
+    private float blinkTime2;
 
     public enum PLAYER_STATE
     {
@@ -95,6 +99,8 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+        blinkTime += Time.deltaTime;
+        blinkTime2 += Time.deltaTime;
         if (canMove == false)
         {
             //cant move
@@ -119,11 +125,7 @@ public class PlayerManager : MonoBehaviour
                 playerMotor.Run(input);
                 break;
             case PLAYER_STATE.SIDLE:
-
-                RaycastHit RayData;
-                Physics.Raycast(transform.position, wallsNearPlayer[0].ClosestPoint(transform.position), out RayData, 2, enviromentLayerMask);
-                playerMotor.Sidle(input, RayData.normal, tempFunc);
-                Debug.Log("raydata norm = " + RayData.normal);
+                playerMotor.Sidle(input, sidleWallNormal, tempFunc);
                 break;
         }
         if (isCrouching == true)
@@ -146,29 +148,57 @@ public class PlayerManager : MonoBehaviour
         switch (armbandState)
         {
             case ARMBAND_STATE.SAFE:
-                armbandMaterial.color = Color.green;
+                if (blinkTime >= 1 / slowBlinkSpeed)
+                {
+                    blinkTime = 0.0f;
+                    blinkTime2 = 0.0f;
+                    armbandMaterial.color = BlinkColor1;
+                }
+                if(blinkTime2 >= 1/blinkSpeed)
+                {
+                    armbandMaterial.color = BlinkColor2;
+                }
                 break;
             case ARMBAND_STATE.SEMIDANGER:
-                armbandMaterial.color = Color.blue;
+                if (blinkTime >= 1 / medBlinkSpeed)
+                {
+                    blinkTime = 0.0f;
+                    blinkTime2 = 0.0f;
+                    armbandMaterial.color = BlinkColor1;
+                }
+                if (blinkTime2 >= 1 / blinkSpeed)
+                {
+                    armbandMaterial.color = BlinkColor2;
+                }
                 break;
             case ARMBAND_STATE.DANGER:
-                armbandMaterial.color = Color.red;
+                if (blinkTime >= 1 / highBlinkSpeed)
+                {
+                    blinkTime = 0.0f;
+                    blinkTime2 = 0.0f;
+                    armbandMaterial.color = BlinkColor1;
+                }
+                if (blinkTime2 >= 1 / blinkSpeed)
+                {
+                    armbandMaterial.color = BlinkColor2;
+                }
                 break;
         }
 
         void tempFunc()
         {
-
+            canWalk = true;
+            canRun = true;
+            playerState = previousPlayerState;
+            previousPlayerState = PLAYER_STATE.SIDLE;
         }
     }
 
+    RaycastHit[] sidleCandidates;
+
     private void UpdatePlayerState()
     {
-        triggerCapsuleTop = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-        triggerCapsuleBot = new Vector3(transform.position.x, transform.position.y + 0.75f, transform.position.z);
-        //note for future, this can also take in a QueryTriggerInteraction to descide if it works on triggers
-        numWallsNearPlayer = Physics.OverlapCapsuleNonAlloc(triggerCapsuleTop, triggerCapsuleBot, selfCapsuleCollider.radius * transform.localScale.x + triggerCapsuleRadiusOffset, wallsNearPlayer, enviromentLayerMask);
-
+        sidleCandidates = Physics.RaycastAll(transform.position, transform.forward, sidleProximity, enviromentLayerMask, QueryTriggerInteraction.Ignore  );
 
         input = new Vector3(Input.GetAxisRaw("Horizontal"),
                                    0.0f,
@@ -240,8 +270,7 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-
-        if (numWallsNearPlayer >= 1)
+        if (sidleCandidates.Length > 0)
         {
             if (autoSidle == true)
             {
@@ -252,12 +281,10 @@ public class PlayerManager : MonoBehaviour
                     canThrowRock = true;
                     canWalk = false;
                     canRun = false;
+
+                    sidleWallNormal = sidleCandidates[0].normal;
+                    sidleWallCollider = sidleCandidates[0].collider;
                 }
-            }
-            else if (/* TO DO buttonisPressed*/ true)
-            {
-                playerState = PLAYER_STATE.SIDLE;
-                //sidle;
             }
         }
         ////DELETE AFTER 
@@ -271,7 +298,7 @@ public class PlayerManager : MonoBehaviour
         //        canThrowRock = false;
         //        canWalk = true;
         //        canRun = true;
-        //    }
+        //    }1
         //}
     }
 
@@ -329,5 +356,11 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, transform.forward * sidleProximity);
     }
 }

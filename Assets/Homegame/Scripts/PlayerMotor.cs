@@ -23,9 +23,6 @@ public class PlayerMotor : MonoBehaviour
     public float groundRunAcceleration = 50;
     public float groundRunMaxSpeed = 5.0f;
 
-    public float groundCrouchAcceleration = 50;
-    public float groundCrouchMaxSpeed = 5.0f;
-
     public float groundSidleAcceleration = 50;
     public float groundSidleMaxSpeed = 5.0f;
 
@@ -46,8 +43,8 @@ public class PlayerMotor : MonoBehaviour
     [Header("Sidle")]
     public float sidleAlignmentDegreesPerSecond = 90.0f;
     bool sidleAligned = false;
-    bool sidleSurfaceKnown = false;
     Vector3 sidleSurfaceNormal;
+    float sidleValidQueryLength = 1.0f;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -63,7 +60,7 @@ public class PlayerMotor : MonoBehaviour
         playerCamera = Camera.main;
     }
 
-    Vector3 ControllerToWorldDirection(Vector3 controllerDir)
+    public Vector3 ControllerToWorldDirection(Vector3 controllerDir)
     {
         controllerDir.Normalize();
         controllerDir = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * controllerDir;
@@ -74,7 +71,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Walk(Vector3 walkDir)
     {
-        Debug.Log("WALKING");
         Vector3 input = ControllerToWorldDirection(walkDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -86,7 +82,6 @@ public class PlayerMotor : MonoBehaviour
 
     public void Run(Vector3 runDir)
     {
-        Debug.Log("RUNNING");
         Vector3 input = ControllerToWorldDirection(runDir);
 
         velocity = MoveGround(input, velocity, groundWalkAcceleration, groundWalkMaxSpeed);
@@ -98,20 +93,47 @@ public class PlayerMotor : MonoBehaviour
 
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
+        // exit if player pulls away from wall
+        if(input.z < 0.0f) { exitSidleCallback.Invoke(); return; }
+        input.z = 0.0f;
+
+        sidleAligned = Vector3.Angle(transform.forward, wallForward) < 5.0f;
         if (sidleAligned == false)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(wallForward), sidleAlignmentDegreesPerSecond * Time.deltaTime);
+            // @anim - player turning!
 
-            return;
+            sidleSurfaceNormal = wallForward;
+            transform.forward = Vector3.RotateTowards(transform.forward, wallForward, Mathf.Deg2Rad * (sidleAlignmentDegreesPerSecond * Time.deltaTime), 0.0f);
+
+            input = Vector3.zero;
         }
 
-        // run this when you detect the sidle is canceled
-        exitSidleCallback.Invoke();
+        Vector3 worldWishDir = Quaternion.Euler(0, Quaternion.LookRotation(-wallForward, Vector3.up).eulerAngles.y, 0) * input;
+        velocity = MoveGround(worldWishDir, velocity, groundSidleAcceleration, groundSidleMaxSpeed);
+        Vector3 nextPosition = transform.position + velocity * Time.deltaTime;
+        Vector3 delta = nextPosition - transform.position;
+
+        var continuousSidleCandidates = Physics.RaycastAll(transform.position, (nextPosition - sidleSurfaceNormal).normalized, sidleValidQueryLength,
+                                                           manager.enviromentLayerMask, QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(transform.position, (nextPosition - sidleSurfaceNormal).normalized * sidleValidQueryLength, Color.yellow);
+
+        bool canMove = false;
+        foreach(var candidate in continuousSidleCandidates)
+        {
+            if(candidate.collider != manager.sidleWallCollider) { continue; }
+            canMove = true;
+            break;
+        }
+
+        if(canMove)
+        {
+            charController.Move(delta);
+        }
     }
 
     public void Idle(Vector3 idleDir)
     {
-        Debug.Log("IDLE");
     }
 
     public void StartCrouch()
@@ -206,6 +228,12 @@ public class PlayerMotor : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, Vector3.down * groundCheckLength);
+
+        if(manager.playerState == PlayerManager.PLAYER_STATE.SIDLE)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawRay(transform.position, sidleSurfaceNormal * 10.0f);
+        }
     }
 
     void Reset()
