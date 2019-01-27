@@ -44,7 +44,6 @@ public class BezierSpline : MonoBehaviour {
 		}
 	}
 	public Vector3 GetControlPoint ( int index) {
-        Debug.Log("Error Getting Control point " + index);
 		return points [index];
 
 	}
@@ -154,7 +153,9 @@ public class BezierSpline : MonoBehaviour {
 
     //we are passing progress along the spline
 	public Vector3 GetPoint (float t) {
-		int i;
+
+        int i;
+
 		if (t >= 1f) {
 			t = 1f;
 			i = points.Length - 4;
@@ -181,24 +182,35 @@ public class BezierSpline : MonoBehaviour {
 	}
 
 
-    //needed to add to flightpath
+    //needed to add to flightpath, pass progress
     public int GetNextPoint(float t)
     {
-        int i;
-        if (t >= 1f)
-        {
-            t = 1f;
-            i = points.Length - 4;
-        }
-        else
-        {
-            t = Mathf.Clamp01(t) * CurveCount;
-            i = (int)t;
-            t -= i;
-            i *= 3;
-        }
+
+        int i = GetLastPoint(t);
+        i++;
+
+        Debug.Log(i);
+
         return i;
     }
+
+    //needed to add to flightpath, pass progress
+    public int GetLastPoint(float t)
+    {
+
+        float d = 1f / points.Length;
+
+        int i = (int)(t / d);
+        return i;
+    }
+
+    public float GetIndexProgress(int index)
+    {
+        int p = index/points.Length;
+        return p;
+    }
+
+
 
     public Vector3 GetVelocity ( float t) {
 		int i;
