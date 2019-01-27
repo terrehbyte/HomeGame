@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 1870822463194231114}
   - component: {fileID: 1870822463195198346}
   - component: {fileID: 6252419221621666745}
+  - component: {fileID: 1169133988736685783}
   m_Layer: 11
   m_Name: '[sci fi wall broken]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1870822463197622632
 Transform:
@@ -91,3 +92,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.049510457, y: 0.004546299, z: 0.018826451}
   m_Center: {x: -0.000011706725, y: 0.0005991674, z: 0.009469574}
+--- !u!64 &1169133988736685783
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870822463197195592}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Convex: 1
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300002, guid: c0aa28ef48511bf4a8f65568e733f4af, type: 3}
