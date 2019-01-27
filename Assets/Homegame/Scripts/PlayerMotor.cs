@@ -269,6 +269,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     private Vector3 Impulse(Vector3 impulse, Vector3 prevVelocity)
     {
+        if(impulse.y > 0) { grounded = false; }
         return prevVelocity + impulse;
     }
 
