@@ -1306,7 +1306,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 978757897}
   m_LocalRotation: {x: -0, y: -0, z: 0.53339255, w: 0.84586793}
-  m_LocalPosition: {x: 3.32, y: 3.5, z: 0}
+  m_LocalPosition: {x: -23.77, y: 3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 160499813}
@@ -1929,32 +1929,32 @@ PrefabInstance:
     - target: {fileID: 4219088309821309578, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.34042525
+      value: 0.34042522
       objectReference: {fileID: 0}
     - target: {fileID: 4219088309821309578, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00032423844
+      value: -0.00032420608
       objectReference: {fileID: 0}
     - target: {fileID: 4219088309821309578, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.00011737888
+      value: 0.000117367155
       objectReference: {fileID: 0}
     - target: {fileID: 4219088309544120865, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000117394346
+      value: 0.00011738264
       objectReference: {fileID: 0}
     - target: {fileID: 4219088309544120865, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.34042525
+      value: 0.34042522
       objectReference: {fileID: 0}
     - target: {fileID: 4219088309544120865, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00032424403
+      value: -0.00032421167
       objectReference: {fileID: 0}
     - target: {fileID: 4219088309520672529, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
@@ -2014,7 +2014,7 @@ PrefabInstance:
     - target: {fileID: 5434193362543288259, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.15758452
+      value: -0.1575845
       objectReference: {fileID: 0}
     - target: {fileID: 5434193362543288259, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
