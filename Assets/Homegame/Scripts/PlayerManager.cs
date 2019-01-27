@@ -14,6 +14,8 @@ public class PlayerManager : MonoBehaviour
 
     public float sidleAngleThreshold = 15.0f;
 
+    public float runLimit;
+
     [Header("DANGER")]
     public float zone1Radius;
     [Header("Semi-Danger")]
@@ -50,14 +52,15 @@ public class PlayerManager : MonoBehaviour
     public bool canTakeDown = false;
 
     //For sidle detection
-    public Vector3 sidleWallNormal { get; private set; }
-    public Collider sidleWallCollider { get; private set; }
+    public Vector3 sidleWallNormal {get; private set;}
+    public Collider sidleWallCollider {get; private set;}
+    public Vector3 sidleWallEntryPoint {get; private set;}
 
     //For Enemy Detection
     private int numEnemiesNearPlayer;
     private Collider[] enemiesNearPlayer = new Collider[1];
 
-    private CapsuleCollider selfCapsuleCollider;
+    public CapsuleCollider selfCapsuleCollider;
     public Renderer selfRenderer;
 
 
@@ -158,16 +161,15 @@ public class PlayerManager : MonoBehaviour
         switch (playerAction)
         {
             case PLAYER_ACTION.NOACTION:
-
                 break;
             case PLAYER_ACTION.TAKEDOWN:
                 playerMotor.doTakedown(enemiesAbovePlayer[0].gameObject, StopTakeDown);
                 break;
             case PLAYER_ACTION.KNOCK:
-
+                playerMotor.doKnock(StopKnock);
                 break;
             case PLAYER_ACTION.THROWROCK:
-
+                Debug.Log("THIS WAS SUPPSED TO BE THROW ROCK LOL");
                 break;
         }
 
@@ -225,6 +227,14 @@ public class PlayerManager : MonoBehaviour
             canRun = true;
             playerAction = PLAYER_ACTION.NOACTION;
         }
+
+        void StopKnock()
+        {
+            playerAction = PLAYER_ACTION.NOACTION;
+            canWalk = true;
+            canRun = true;
+            canCrouch = true;
+        }
     }
 
     RaycastHit[] sidleCandidates;
@@ -256,7 +266,7 @@ public class PlayerManager : MonoBehaviour
                 playerState = PLAYER_STATE.WALK;
             }
 
-            if ( Input.GetKey(KeyCode.LeftShift)    && canRun == true)
+            if ( (Input.GetKey(KeyCode.LeftShift) || inputManager.input.magnitude >= runLimit) && canRun == true)
             {
                 if (playerState != PLAYER_STATE.RUN)
                 {
@@ -287,6 +297,7 @@ public class PlayerManager : MonoBehaviour
             if (isCrouching == false)
             {
                 //redundant but for saftey
+                canKnock = false;
                 canRun = false;
                 isCrouching = true;
             }
@@ -295,7 +306,9 @@ public class PlayerManager : MonoBehaviour
         {
             if (isCrouching == true)
             {
+                canKnock = true;
                 canRun = true;
+                
                 isCrouching = false;
             }
         }
@@ -314,27 +327,14 @@ public class PlayerManager : MonoBehaviour
 
                     sidleWallNormal = sidleCandidates[0].normal;
                     sidleWallCollider = sidleCandidates[0].collider;
+                    sidleWallEntryPoint = sidleCandidates[0].point;
                 }
             }
         }
-        ////DELETE AFTER 
-        //else
-        //{
-        //    if (playerState == PLAYER_STATE.SIDLE)
-        //    {
-        //        playerState = previousPlayerState;
-        //        previousPlayerState = PLAYER_STATE.SIDLE;
-        //        canKnock = false;
-        //        canThrowRock = false;
-        //        canWalk = true;
-        //        canRun = true;
-        //    }1
-        //}
     }
 
     private void UpdatePlayerAction()
     {
-
         //Shit for take down
         numEnemiesAbovePlayer = Physics.OverlapCapsuleNonAlloc(transform.position,
                                 new Vector3(transform.position.x, transform.position.y + 1,
@@ -368,7 +368,9 @@ public class PlayerManager : MonoBehaviour
                 playerAction = PLAYER_ACTION.KNOCK;
                 canThrowRock = false;
                 canTakeDown = false;
-
+                canWalk = false;
+                canRun = false;
+                canCrouch = false;
                 //TURN THESE BACK ON AFTER THE ANIM
             }
         }

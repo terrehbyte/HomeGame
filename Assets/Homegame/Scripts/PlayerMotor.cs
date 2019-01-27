@@ -11,10 +11,13 @@ public class PlayerMotor : MonoBehaviour
 
     [Header("Movement")]
     public float sidleLerpSpeed = 1;
+    public float sidleAlignmentFudgeAmount = 0.0f;
     [ReadOnlyField]
     public Vector3 velocity;
     [ReadOnlyField]
     public Camera playerCamera;
+    public Transform sidleCamera;
+    public Transform peekCamera;
     public float groundFriction = 11;
 
     public float groundWalkAcceleration = 50;
@@ -42,9 +45,10 @@ public class PlayerMotor : MonoBehaviour
 
     [Header("Sidle")]
     public float sidleAlignmentDegreesPerSecond = 90.0f;
-    bool sidleAligned = false;
+    public float sidleAlignmentTranslationPerSecond = 2.0f;
     Vector3 sidleSurfaceNormal;
-    float sidleValidQueryLength = 1.0f;
+    public float sidleValidQueryLength = 1.0f;
+    public float sidleCameraDistance = 5.0f;
 
     [Header("Ground Check")]
     public float groundCheckLength = 1.5f;
@@ -54,6 +58,7 @@ public class PlayerMotor : MonoBehaviour
     [ReadOnlyField]
     public Vector3 groundNorm;
     private float DELETEME;
+    public float sidleEdgeLimit = 0.5f;
 
     private void Awake()
     {
@@ -94,18 +99,32 @@ public class PlayerMotor : MonoBehaviour
     public void Sidle(Vector3 input, Vector3 wallForward, System.Action exitSidleCallback)
     {
         // exit if player pulls away from wall
-        if(input.z < 0.0f) { exitSidleCallback.Invoke(); return; }
+        if(input.z < 0.0f)
+        {
+            sidleCamera.gameObject.SetActive(false);
+            exitSidleCallback.Invoke();
+            return;
+        }
         input.z = 0.0f;
 
-        sidleAligned = Vector3.Angle(transform.forward, wallForward) < 5.0f;
-        if (sidleAligned == false)
+        bool proximityCheck = Vector3.Distance(manager.sidleWallEntryPoint, transform.position) < manager.selfCapsuleCollider.radius + 0.1f;
+        bool rotationCheck = (Vector3.Angle(transform.forward, wallForward) < 5.0f);
+        bool sidleAligned = rotationCheck;//proximityCheck && ;
+        if (!sidleAligned)
         {
             // @anim - player turning!
 
             sidleSurfaceNormal = wallForward;
             transform.forward = Vector3.RotateTowards(transform.forward, wallForward, Mathf.Deg2Rad * (sidleAlignmentDegreesPerSecond * Time.deltaTime), 0.0f);
+            transform.position = Vector3.MoveTowards(transform.position, manager.sidleWallEntryPoint + wallForward * manager.selfCapsuleCollider.radius, sidleAlignmentTranslationPerSecond * Time.deltaTime );
 
             input = Vector3.zero;
+        }
+        if(sidleAligned)
+        {
+            sidleCamera.transform.position = transform.position - wallForward * sidleCameraDistance;
+            //sidleCamera.transform.LookAt(transform, transform.up);
+            sidleCamera.gameObject.SetActive(true);
         }
 
         Vector3 worldWishDir = Quaternion.Euler(0, Quaternion.LookRotation(-wallForward, Vector3.up).eulerAngles.y, 0) * input;
@@ -113,10 +132,10 @@ public class PlayerMotor : MonoBehaviour
         Vector3 nextPosition = transform.position + velocity * Time.deltaTime;
         Vector3 delta = nextPosition - transform.position;
 
-        var continuousSidleCandidates = Physics.RaycastAll(transform.position, (nextPosition - sidleSurfaceNormal).normalized, sidleValidQueryLength,
-                                                           manager.enviromentLayerMask, QueryTriggerInteraction.Ignore);
+        Ray ray = new Ray(transform.position + velocity.normalized * sidleEdgeLimit, -wallForward);
 
-        Debug.DrawRay(transform.position, (nextPosition - sidleSurfaceNormal).normalized * sidleValidQueryLength, Color.yellow);
+        Debug.DrawRay(ray.origin, ray.direction * sidleValidQueryLength, Color.yellow, 0.0f);
+        var continuousSidleCandidates = Physics.RaycastAll(ray, sidleValidQueryLength, manager.enviromentLayerMask, QueryTriggerInteraction.Ignore);
 
         bool canMove = false;
         foreach(var candidate in continuousSidleCandidates)
@@ -165,9 +184,10 @@ public class PlayerMotor : MonoBehaviour
 
     }
 
-    void doKnock()
+    public void doKnock(System.Action exitCallback)
     {
-
+        //DO SHIT
+        exitCallback();
     }
 
     // Returns the player's new velocity when moving on the ground
