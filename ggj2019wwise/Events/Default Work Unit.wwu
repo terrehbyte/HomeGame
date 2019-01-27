@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{680BCC66-DC1D-4FCA-8840-250D52A7BEDF}" SchemaVersion="89">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{680BCC66-DC1D-4FCA-8840-250D52A7BEDF}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Play_footstep" ID="{F55FBC9D-7A89-4A2E-B1BC-C4F41D8E2452}">
+					<ChildrenList>
+						<Action Name="" ID="{9BE159E2-B114-472D-8A54-BBE8527EE57F}" ShortID="107479091">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="footstepContainer" ID="{B75CF87B-86DA-4E45-A4A6-E0EEB4C0CB2E}" WorkUnitID="{2649C5F4-AFEB-4ECE-8DA4-1041947B6BDA}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_drone" ID="{BA6C0B52-14BB-4CB9-B944-FE6F588953A1}">
+					<ChildrenList>
+						<Action Name="" ID="{A80908CA-45A2-4D3A-AD48-B09793B6B968}" ShortID="759580916">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="drone" ID="{A51DCFAE-2EB2-4800-A47F-00063A1B2EB6}" WorkUnitID="{2649C5F4-AFEB-4ECE-8DA4-1041947B6BDA}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_gameOver" ID="{A37F473D-D693-4978-BAFA-5E368066FFAF}">
+					<ChildrenList>
+						<Action Name="" ID="{302D5DCA-276F-484C-9434-200C852EF4A9}" ShortID="784440102">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="eventImpact" ID="{BD4FB3F5-1922-4AD8-8E6B-11BE885EDD9E}" WorkUnitID="{2649C5F4-AFEB-4ECE-8DA4-1041947B6BDA}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_wrist" ID="{2B2A08BE-7720-4903-8321-F7C1F14675E5}">
+					<ChildrenList>
+						<Action Name="" ID="{F38BCFE4-C010-47D4-BB47-94E28C136B8E}" ShortID="525950879">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wristBand" ID="{DE2BD4E3-6E48-4A97-8B88-17F574ECB31F}" WorkUnitID="{2649C5F4-AFEB-4ECE-8DA4-1041947B6BDA}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_music" ID="{EB9D11EA-F1EB-4E24-8038-1DF53907140A}">
+					<ChildrenList>
+						<Action Name="" ID="{E8833BC8-AB70-4D37-A353-132F35494364}" ShortID="943726149">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="musicSwitch" ID="{9ACC444A-F32B-44C4-8414-D2F3BDE4F1C6}" WorkUnitID="{4D3DB7DF-2FEB-43BE-9F64-5DC8CCE34B9B}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>
