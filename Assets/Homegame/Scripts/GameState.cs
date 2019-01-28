@@ -17,6 +17,7 @@ public class GameState : MonoBehaviour
     Coroutine currentCoroutine;
 
     public UnityEvent OnGameStart;
+    public UnityEvent OnGameStartCompleted;
     public UnityEvent OnPlayerDeath;
     public UnityEvent OnGameEnd;
 
@@ -103,5 +104,13 @@ public class GameState : MonoBehaviour
         Color og = screenOverlay.color;
         og.a = 0.0f;
         screenOverlay.color = og;
+    }
+
+    public void ProcessAnimationMessage(string message)
+    {
+        if(message == "OpeningExit")
+        {
+            OnGameStartCompleted.Invoke();
+        }
     }
 }
