@@ -106,24 +106,23 @@ public class BezierDrone : MonoBehaviour
 
         ////current point
         newPath.points[0] = spline.GetPoint(progress);  
-        newPath.modes[0] = BezierControlPointMode.Mirrored;
+        newPath.modes[0] = BezierControlPointMode.Free;
         //current point
         newPath.points[1] = spline.GetPoint(spline.GetLastPoint(progress));
         newPath.modes[1] = BezierControlPointMode.Mirrored;
         //point of interest
 
         newPath.points[2] = pointOfInterest;
-        newPath.modes[2] = BezierControlPointMode.Mirrored;
+        newPath.modes[2] = BezierControlPointMode.Aligned;
         spline.GetNextPoint(progress);
         //next point
         returnPoint = spline.GetNextPoint(progress);
         newPath.points[3] = spline.GetPoint(progress);
-        newPath.modes[3] = BezierControlPointMode.Mirrored;
+        newPath.modes[3] = BezierControlPointMode.Free;
 
         //move bot to new spline
-        StopCoroutine("Patrol");
-        Debug.Log("Partol Interupted");
         spline = newPath;
+        //reset progress for newSpline
         progress = 0;
 
     }
@@ -157,7 +156,7 @@ public class BezierDrone : MonoBehaviour
                         canInitiateSearch = true;
                     }
                     break;
-                case DroneBehavior.dead:
+                case DroneBehavior.Dead:
                     this.OnDisable();
                     break;
                 default:
@@ -181,6 +180,6 @@ public class BezierDrone : MonoBehaviour
 
 enum DroneBehavior
 {
-    Patrolling,Cation, dead
+    Patrolling,Cation, Dead
 
 }
