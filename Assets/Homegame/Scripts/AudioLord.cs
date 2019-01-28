@@ -110,17 +110,25 @@ public class AudioLord : MonoBehaviour
 
     public void BlinkCaller()
     {
-        ActionSource1.PlayOneShot(wristBandClip);
+        ActionSource1.PlayOneShot(wristBandClip,0.5f);
 
     }
 
     public void FootCaller()
     {
-        if (playerManager.playerState != PlayerManager.PLAYER_STATE.SIDLE || playerManager.isCrouching == false)
-        {
 
+
+        if (playerManager.playerState == PlayerManager.PLAYER_STATE.RUN)
+        {
+            footSource.PlayOneShot(footclip[Random.Range(0, 6)], 1.0f);
         }
-        footSource.PlayOneShot(footclip[Random.Range(0, 6)]);
+        else
+        {
+            footSource.PlayOneShot(footclip[Random.Range(0, 6)], 0.2f);
+        }
+
+
+        
     }
 
 
