@@ -9,6 +9,8 @@ public class SenseBase : MonoBehaviour
     public Vector3 lastPosition;
     [SerializeField] UnityEvent ThingToDo;
 
+    public bool killZone;
+
     protected virtual void Start()
     {
 
@@ -18,9 +20,18 @@ public class SenseBase : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            lastPosition = other.transform.position;
-            ThingToDo.Invoke();
 
+            if (killZone == false)
+            {
+
+                lastPosition = other.transform.position;
+                ThingToDo.Invoke();
+            }
+            else
+            {
+                GameState.instance.TriggerPlayerDeath();
+            }
+            
         }
     }
 

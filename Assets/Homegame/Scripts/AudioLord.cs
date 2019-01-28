@@ -110,7 +110,7 @@ public class AudioLord : MonoBehaviour
 
     public void BlinkCaller()
     {
-        ActionSource1.PlayOneShot(wristBandClip,0.5f);
+        ActionSource1.PlayOneShot(wristBandClip,0.8f);
 
     }
 
@@ -120,7 +120,7 @@ public class AudioLord : MonoBehaviour
 
         if (playerManager.playerState == PlayerManager.PLAYER_STATE.RUN)
         {
-            footSource.PlayOneShot(footclip[Random.Range(0, 6)], 1.0f);
+            footSource.PlayOneShot(footclip[Random.Range(0, 6)], 0.7f);
         }
         else
         {
