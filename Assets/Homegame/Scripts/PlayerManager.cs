@@ -124,9 +124,9 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        if(playerAction == PLAYER_ACTION.WAKINGUP && inputManager.gamepadStart)
+        if(inputManager.gamepadStart)
         {
-            playerMotor.animator.SetTrigger("Opening");
+            GameState.instance.TriggerPlayerDeath();
         }
 
         blinkTime += Time.deltaTime;

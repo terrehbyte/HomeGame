@@ -110,7 +110,7 @@ public class AudioLord : MonoBehaviour
 
     public void BlinkCaller()
     {
-        ActionSource1.PlayOneShot(wristBandClip,0.5f);
+        ActionSource1.PlayOneShot(wristBandClip,0.7f);
 
     }
 
