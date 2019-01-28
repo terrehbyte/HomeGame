@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public class SenseBase : MonoBehaviour
 {
+    public bool isKill;
+
     public Vector3 lastPosition;
     [SerializeField] UnityEvent ThingToDo;
 
@@ -18,9 +20,15 @@ public class SenseBase : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            lastPosition = other.transform.position;
-            ThingToDo.Invoke();
-
+            if (isKill == false)
+            {
+                lastPosition = other.transform.position;
+                ThingToDo.Invoke();
+            }
+            else
+            {
+                GameState.instance.TriggerPlayerDeath();
+            }
         }
     }
 
