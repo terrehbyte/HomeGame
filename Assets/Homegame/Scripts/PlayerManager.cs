@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -52,6 +53,8 @@ public class PlayerManager : MonoBehaviour
     [ReadOnlyField]
     public bool canTakeDown = false;
 
+    public Cinemachine.CinemachineFreeLook gameCamera;
+
 
     [Header("Sidle Shit")]
     public float sidleAngleThreshold = 15.0f;
@@ -83,10 +86,7 @@ public class PlayerManager : MonoBehaviour
     private float blinkTime;
     private float blinkTime2;
 
-
     //GAMEPAD SHIT
-
-
 
     public enum PLAYER_STATE
     {
@@ -124,6 +124,10 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+        if(playerAction == PLAYER_ACTION.WAKINGUP && inputManager.gamepadStart)
+        {
+            playerMotor.animator.SetTrigger("Opening");
+        }
 
         blinkTime += Time.deltaTime;
         blinkTime2 += Time.deltaTime;
@@ -139,6 +143,17 @@ public class PlayerManager : MonoBehaviour
         }
 
         UpdatePlayerArmband();
+
+        if(!inputManager.blockInput)
+        {
+            gameCamera.m_XAxis.m_InputAxisName = "Mouse X";
+            gameCamera.m_YAxis.m_InputAxisName = "Mouse Y";
+        }
+        else
+        {
+            gameCamera.m_XAxis.m_InputAxisName = string.Empty;
+            gameCamera.m_YAxis.m_InputAxisName = string.Empty;
+        }
 
         switch (playerState)
         {
@@ -475,4 +490,10 @@ public class PlayerManager : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawRay(sidleRaycastOrigin.position, transform.forward * sidleProximity);
     }
+}
+
+[System.Serializable]
+public class UnityStringEvent : UnityEvent<string>
+{
+
 }

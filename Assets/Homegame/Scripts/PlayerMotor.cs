@@ -8,7 +8,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public CharacterController charController;
     public CapsuleCollider coll;
     public PlayerManager manager;
-    [SerializeField] Animator animator;
+    [SerializeField] public Animator animator;
     public Renderer characterRenderer;
 
     [Header("Movement")]
@@ -66,6 +66,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
     public Vector3 groundNorm;
     private float DELETEME;
 
+    public UnityStringEvent OnAnimationMessage;
 
      private bool wakeUpAnimationFinished = false;
      private bool takedownAnimationFinished = false;
@@ -121,7 +122,7 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
         var vcam = sidleCamera.GetComponent<Cinemachine.CinemachineVirtualCamera>();
         vcam.Follow = vcam.LookAt = manager.transform;
         var transposer = vcam.GetCinemachineComponent<Cinemachine.CinemachineComposer>();
-        transposer.m_TrackedObjectOffset = new Vector3(-Input.GetAxis("Mouse X") * sidleCameraTargetOffset, 0.0f, 0.0f);
+        //transposer.m_TrackedObjectOffset = new Vector3(-Input.GetAxis("Mouse X") * sidleCameraTargetOffset, 0.0f, 0.0f);
 
         // exit if player pulls away from wall
         if(input.z < sidleExitZThreshold)
@@ -337,6 +338,8 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
 
     public void OnStateChanged(AnimatorEventInfo eventInfo)
     {
+        Debug.Log(eventInfo.message);
+        OnAnimationMessage.Invoke(eventInfo.message);
         if (eventInfo.message == "KnockEnd")
         {
             Debug.Log("Knock stop");
@@ -354,6 +357,5 @@ public class PlayerMotor : MonoBehaviour, IAnimatorStateNotifyReciever
             Debug.Log("Openning stop");
             wakeUpAnimationFinished = true;
         }
-
     }
 }
