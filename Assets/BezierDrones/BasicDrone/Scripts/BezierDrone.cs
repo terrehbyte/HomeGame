@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class BezierDrone : MonoBehaviour
 {
+    [SerializeField] SenseBase senses;
 
     public BezierSpline mainSpline;
     BezierSpline spline;
@@ -20,13 +21,12 @@ public class BezierDrone : MonoBehaviour
     [SerializeField]int returnPoint;
 
 
+    DroneBehavior db = DroneBehavior.Patrolling;
+
+
     public Vector3 pointOfInterest;
-
-
     Rigidbody rb;
 
-
-    SenseBase[] senses;
     [SerializeField] public int indexToChange;
 
     private void Awake()
@@ -81,10 +81,11 @@ public class BezierDrone : MonoBehaviour
 
     public void SpottedSomething()
     {
+        pointOfInterest = senses.lastPosition;
         if (canInitiateSearch) {
             canInitiateSearch = false;
             SetInvestigatePath();
-            StartCoroutine(SearchCooldown());
+            db = DroneBehavior.Cation;
         }
     }
 
@@ -93,7 +94,7 @@ public class BezierDrone : MonoBehaviour
     public void SetInvestigatePath()
     {
         mainProgress = progress;
-
+        loopDuration = (mainloopDuration / mainSpline.points.Length) * spline.points.Length;
 
         GameObject go = new GameObject();
         BezierSpline newPath = go.AddComponent<BezierSpline>();
@@ -120,29 +121,49 @@ public class BezierDrone : MonoBehaviour
         newPath.modes[3] = BezierControlPointMode.Mirrored;
 
         //move bot to new spline
-        StopCoroutine(Patrol());
+        StopCoroutine("Patrol");
+        Debug.Log("Partol Interupted");
         spline = newPath;
         progress = 0;
-        StartCoroutine(Investigate());
 
     }
 
     IEnumerator Patrol()
     {
-        StopCoroutine(Investigate());
-        float startTime = Time.time;
 
         while (true)
         {
-
-
-            progress += (Time.deltaTime / loopDuration);
-            if (progress > 1f)
+            switch (db)
             {
+                case DroneBehavior.Patrolling:
+                    progress += (Time.deltaTime / mainloopDuration);
+                    //looping
+                    if (progress > 1f)
+                    {
 
-                progress -= 1f;
+                        progress -= 1f;
 
+                    }
+                    FacePosition();
+                    break;
+                case DroneBehavior.Cation:
+
+                    progress += (Time.deltaTime / loopDuration);
+                    if (progress >= 1f)
+                    {
+                        spline = mainSpline;
+                        progress = mainProgress;
+                        db = DroneBehavior.Patrolling;
+                        canInitiateSearch = true;
+                    }
+                    break;
+                case DroneBehavior.dead:
+                    this.OnDisable();
+                    break;
+                default:
+                    break;
             }
+
 
             //AdjustPath(indexToChange);
             FacePosition();
@@ -155,43 +176,11 @@ public class BezierDrone : MonoBehaviour
 
 
 
-    IEnumerator Investigate()
-    {
-        bool isInvestigating = true;
-        float startTime = Time.time;
-        loopDuration = (mainloopDuration / mainSpline.points.Length) * spline.points.Length;
-
-        while (isInvestigating)
-        {
-
-            progress += (Time.deltaTime / loopDuration);
-            if (progress >= 1f)
-            {
-
-                isInvestigating = false;
-            }
-
-            //AdjustPath(indexToChange);
-            FacePosition();
-
-            yield return null;
-
-        }
-        spline = mainSpline;
-        progress = mainProgress;
-        loopDuration = mainloopDuration;
-        StartCoroutine(Patrol());
+}
 
 
+enum DroneBehavior
+{
+    Patrolling,Cation, dead
 
-    }
-
-    IEnumerator SearchCooldown()
-    {
-        yield return new WaitForSeconds(InvestigationCooldown);
-        canInitiateSearch = true;
-    }
-    
-
-
-    }
+}

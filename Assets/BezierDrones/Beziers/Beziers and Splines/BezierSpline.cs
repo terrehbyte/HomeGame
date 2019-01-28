@@ -5,7 +5,7 @@ using System;
 
 public class BezierSpline : MonoBehaviour {
 
-  
+    SenseBase senses;
 	public Vector3[] points;
 
 	[SerializeField]

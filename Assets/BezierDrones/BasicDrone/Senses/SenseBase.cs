@@ -6,16 +6,12 @@ using UnityEngine.Events;
 
 public class SenseBase : MonoBehaviour
 {
-    Vector3 lastPosition;
+    public Vector3 lastPosition;
     [SerializeField] UnityEvent ThingToDo;
-    [SerializeField] Material indicator;
 
     protected virtual void Start()
     {
-        if (indicator != null)
-        {
-            indicator = GetComponent<Renderer>().material;
-        }
+
     }
 
     protected void OnTriggerEnter(Collider other)
@@ -24,10 +20,12 @@ public class SenseBase : MonoBehaviour
         {
             lastPosition = other.transform.position;
             ThingToDo.Invoke();
-            if (indicator != null)
-            {
-                indicator.color = Color.red;
-            }
+
         }
     }
+
+
+
+
+
 }
