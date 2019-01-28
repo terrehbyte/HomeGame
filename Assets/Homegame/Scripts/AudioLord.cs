@@ -21,6 +21,8 @@ public class AudioLord : MonoBehaviour
 
     public GameObject playerObject;
 
+    public PlayerManager playerManager;
+
     public float transitionTime;
     private int songPlaying;
     private float time;
@@ -114,6 +116,10 @@ public class AudioLord : MonoBehaviour
 
     public void FootCaller()
     {
+        if (playerManager.playerState != PlayerManager.PLAYER_STATE.SIDLE || playerManager.isCrouching == false)
+        {
+
+        }
         footSource.PlayOneShot(footclip[Random.Range(0, 6)]);
     }
 

@@ -24,29 +24,28 @@ public class GameState : MonoBehaviour
     {
         instance = instance == null ? this : instance;
         if(instance != this) { Destroy(gameObject); }
-        //DontDestroyOnLoad(this);
 
+        TriggerFadeBirth();
         SceneManager.sceneLoaded += OnSceneLoaded;
-        TriggerGameStart();
-
     }
 
     [ContextMenu("Trigger Game Start")]
     public void TriggerGameStart()
     {
-        TriggerFadeBirth();
+        OnGameStart.Invoke();
     }
 
     [ContextMenu("Trigger Player Death")]
     public void TriggerPlayerDeath()
     {
         TriggerFadeDeath();
+        OnPlayerDeath.Invoke();
     }
 
     [ContextMenu("Trigger Game End")]
     public void TriggerGameEnd()
     {
-
+        OnGameEnd.Invoke();
     }
 
     private void TriggerFadeBirth()

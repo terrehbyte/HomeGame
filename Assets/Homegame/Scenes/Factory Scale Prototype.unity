@@ -685,18 +685,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textUI: A to Crouch
---- !u!114 &387830769 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3725902557791222044, guid: 316a778df83cbd94d8205adf7b982de4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1774732749}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8a738b9b572af54da5bb41eac036ed7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &439220017
 GameObject:
   m_ObjectHideFlags: 0
@@ -1993,17 +1981,17 @@ PrefabInstance:
     - target: {fileID: 5434193362518756083, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.20083222
+      value: -0.20083223
       objectReference: {fileID: 0}
     - target: {fileID: 5434193362518756083, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.014354394
+      value: 0.014354425
       objectReference: {fileID: 0}
     - target: {fileID: 5434193362518756083, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.10587628
+      value: -0.10587629
       objectReference: {fileID: 0}
     - target: {fileID: 5434193362518756083, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
@@ -2018,12 +2006,12 @@ PrefabInstance:
     - target: {fileID: 5434193362543288259, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.15758452
+      value: -0.1575845
       objectReference: {fileID: 0}
     - target: {fileID: 5434193362543288259, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0322028
+      value: 0.032202803
       objectReference: {fileID: 0}
     - target: {fileID: 5434193362543288259, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
@@ -2045,11 +2033,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -3.0994065
       objectReference: {fileID: 0}
-    - target: {fileID: 57290734435481697, guid: 316a778df83cbd94d8205adf7b982de4,
+    - target: {fileID: 3725902557791222044, guid: 316a778df83cbd94d8205adf7b982de4,
         type: 3}
-      propertyPath: audioLord
-      value: 
-      objectReference: {fileID: 387830769}
+      propertyPath: transitionTime
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 316a778df83cbd94d8205adf7b982de4, type: 3}
 --- !u!1 &1922284712
