@@ -19,6 +19,15 @@ public class BezierSpline : MonoBehaviour {
         // Draw a yellow sphere at the transform's position
         Gizmos.color = Color.yellow;
         Gizmos.DrawIcon(transform.position +new Vector3(0f,.05f,0f), ("Bezier/DroneIcon"));
+        for (int i = 0; i < points.Length; i++){
+            if ((i % 3) == 0)
+            {
+                Gizmos.DrawIcon(points[i], "Bezier/CirclePointer", true);
+            } else
+            {
+                Gizmos.DrawIcon(points[i], "Bezier/BoxPointer", true);
+            }
+        }
     }
     
     public bool Loop {

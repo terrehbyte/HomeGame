@@ -81,7 +81,7 @@ public class BezierSplineInspector : Editor {
 
 		Handles.color = modeColors[(int)spline.GetControlPointMode(index)];
 		if (Handles.Button (point, handleRotation, size * handleSize, size * pickSize, Handles.DotHandleCap)){
-            //Handles.Label(point, new GUIContent ("Bezier/CirclePointer.png"));
+            
 			selectedIndex = index;
 			Repaint ();
 		}
